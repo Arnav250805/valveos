@@ -1,0 +1,13 @@
+# dependencies (reinstallable, huge)
+app/node_modules/
+
+# build output
+app/dist/
+
+# raw CAD downloads (large; keep local, reproducible)
+raw/_extracted/
+raw/*.zip
+
+# macOS junk
+.DS_Store
+**/.DS_Store

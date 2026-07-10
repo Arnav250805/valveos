@@ -22,6 +22,17 @@ npm run dev          # then open http://localhost:5173
 ```
 Leave that terminal running (it is the dev server). Use a second tab for git.
 
+## Live site (Vercel) — MASTER LINK
+**https://valveos-mvp.vercel.app/**  ← the deployed app; open on any device, no terminal needed.
+
+Deploy the latest local version to it with:
+```
+cd "ValveOS/app"
+vercel --prod
+```
+The URL is stable and always serves the last `vercel --prod` deploy. Vercel project name: `valveos`.
+Routine: edit locally → check on localhost → `vercel --prod` to publish to the master link.
+
 ## Tech stack & key decisions
 - Vite + React (JavaScript), three.js via @react-three/fiber + @react-three/drei.
 - The whole scene is defined by the **`STEPS` array at the top of `app/src/App.jsx`**.

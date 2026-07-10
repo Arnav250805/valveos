@@ -14,11 +14,11 @@ import * as THREE from "three";
 // position = metres, rotation = degrees, scale = multiplier.
 const PARTS = [
   { id: "valve", url: "/valve.glb", position: [0, 0, 0], rotation: [0, 0, 0], scale: 1.0 },
-  { id: "bracket", url: "/bracket.glb", position: [0, 0.098, 0.01], rotation: [-90, 0, -90], scale: 0.73 },
-  { id: "actuator", url: "/actuator.glb", position: [0, 0.123, 0], rotation: [0, 0, 0], scale: 0.55 },
-  { id: "sov", url: "/sov.glb", position: [0.05, 0.17, 0], rotation: [0, -180, -180], scale: 0.46 },
-  { id: "lsb", url: "/lsb.glb", position: [0, 0.281, 0], rotation: [-90, 0, -91], scale: 0.85 },
-  { id: "afr", url: "/afr.glb", position: [-0.13, 0.05, 0], rotation: [0, 90, 0], scale: 0.49 },
+  { id: "bracket", url: "/bracket.glb", position: [0, 0.15, 0], rotation: [-90, 0, -90], scale: 0.73 },
+  { id: "actuator", url: "/actuator.glb", position: [0, 0.17, 0], rotation: [0, 0, 0], scale: 0.55 },
+  { id: "sov", url: "/sov.glb", position: [0.05, 0.23, 0], rotation: [0, -180, -180], scale: 0.46 },
+  { id: "lsb", url: "/lsb.glb", position: [0, 0.33, 0], rotation: [-90, 0, -91], scale: 0.85 },
+  { id: "afr", url: "/afr.glb", position: [0.04, 0.21, 0.05], rotation: [0, 90, 0], scale: 0.49 },
 ];
 
 const D2R = Math.PI / 180;
@@ -101,7 +101,7 @@ export default function App() {
           far={0.6}
         />
 
-        <OrbitControls makeDefault target={[0, 0.15, 0]} />
+        <OrbitControls makeDefault target={[0, 0.16, 0]} />
       </Canvas>
     </div>
   );

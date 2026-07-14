@@ -110,8 +110,10 @@ Question (open): to keep item code BV1121-PA1019-TP0191-CL00 while staying safe,
 (a) create distinct partIds for the 40 mm valve and RNP80 actuator (e.g. BV1124/PA1025
 from the drawing body) and let the config recipe map the item code to them, or
 (b) treat BV1121/PA1019 as size-agnostic families with size as an attribute?
-Status: HELD. Not writing either part into parts-knowledge until this is resolved, so no
-wrong spec can bleed across configs.
+RESOLVED (2026-07-14): Arnav directed distinct partIds. Written as valve40 (itemSubCode
+BV1124) and actuator80 (itemSubCode PA1025) - different products, different identity, so
+15 mm specs can never resolve onto the 40 mm valve. Official config item code still to be
+ratified: see openQuestion OQ-14 (body code BV1124-PA1025-TP0026-CL00 vs stale filename).
 
 ---
 

@@ -85,18 +85,6 @@ const STEPS = [
     checks: ["Bowl drain pointing down", "Set 4-6 bar"],
   },
   {
-    id: "lsbmount",
-    url: "/lsbmount.glb",
-    position: [0, 0.258, 0],
-    rotation: [0, 0, 0],
-    scale: 1.0,
-    insert: [0, 0.12, 0],
-    title: "Fit the switch box mounting",
-    tool: "Allen key 4 mm",
-    torque: "—",
-    checks: ["Posts square to actuator top", "Coupling aligned to pinion"],
-  },
-  {
     id: "lsb",
     url: "/lsb.glb",
     position: [-0.05, 0.33, 0],
@@ -104,9 +92,18 @@ const STEPS = [
     scale: 0.85,
     insert: [0, 0.22, 0],
     title: "Fit the limit switch box",
-    tool: "Screwdriver",
+    tool: "Spanner / screwdriver",
     torque: "—",
-    checks: ["Cams set OPEN / CLOSED", "VDI/VDE 3845 bracket seated"],
+    checks: [
+      "Integral bracket seated square on actuator top",
+      "Shaft engaged in pinion BEFORE nuts pulled",
+      "Cams set OPEN / CLOSED",
+    ],
+    // LSB ships with its bracket integral (no separate riser); the bracket mesh
+    // reveals together with the box as one unit.
+    extras: [
+      { url: "/lsbmount.glb", position: [0, 0.258, 0], rotation: [0, 0, 0], scale: 1.0, insert: [0, 0.22, 0] },
+    ],
   },
 ];
 
@@ -177,7 +174,12 @@ function Scene({ step }) {
 
       <Suspense fallback={null}>
         {STEPS.map((s, i) => (
-          <Part key={s.id} {...s} revealed={i < step} />
+          <group key={s.id}>
+            <Part {...s} revealed={i < step} />
+            {(s.extras || []).map((e, j) => (
+              <Part key={s.id + "-x" + j} {...e} revealed={i < step} />
+            ))}
+          </group>
         ))}
       </Suspense>
 
@@ -294,4 +296,7 @@ const btn = {
   fontFamily: "system-ui, sans-serif",
 };
 
-STEPS.forEach((s) => useGLTF.preload(s.url));
+STEPS.forEach((s) => {
+  useGLTF.preload(s.url);
+  (s.extras || []).forEach((e) => useGLTF.preload(e.url));
+});

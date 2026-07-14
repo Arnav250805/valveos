@@ -1,6 +1,6 @@
 # ValveOS — project status & handoff (read this first)
 
-_Last updated: 2026-07-10. Single source of truth for any new chat._
+_Last updated: 2026-07-14. Single source of truth for any new chat._
 
 ## One-liner
 A working browser 3D assembly viewer for valve automation. It plays an animated,
@@ -66,6 +66,13 @@ ValveOS/
 Rotex 30318 NAMUR SOV 24 VDC · Valmet KS2V limit switch box · Shavo SB10 AFR · BK1001 bracket + coupling.
 (The 3D parts are generic stand-ins for the demo; real STEP files can be swapped in later.)
 
+## Config BV1124 (Config 2) — bill of materials
+40 mm L&T L1RF1C valve (BV1124) · Valmet RNP80SR40CA1GD actuator (PA1025, FAIL-TO-CLOSE) ·
+Rotex 30318 NAMUR SOV 24 VDC (SV1007) · Valmet KS2V limit switch box (LB1002) ·
+Shavo SB10 AFR (FR1001) · BK1001 bracket + coupling · SS304 tubing (TB1001).
+Fail-action is OPPOSITE to Config 1 (Config 1 is fail-to-open). Source drawings already in
+repo: drawings/40mm-BV1121-PA1019-TP0191-CL00.pdf, drawings/RNP080DN00DA1GD.pdf (actuator).
+
 ## Current phase: assembly flow
 Draft golden step list is in `docs/assembly-flow-config01.md`. Arnav is writing the
 **real, observed** assembly flow by watching one of his fitters build the unit, then handing it over.
@@ -78,3 +85,41 @@ placed at the bolted joints with torque callouts.
 - Start replies with "Arnav,". Be concise. No em-dashes or buzzwords in drafted emails.
 - One small, testable step at a time; commit to git at each working state.
 - Opus for general work; use Fable 5 for heavy analysis (e.g. reading drawings).
+
+## Parts-knowledge database (standing rule)
+There is ONE canonical parts-knowledge database:
+- machine source of truth: `ValveOS/data/parts-knowledge.json`
+- read-by-eye mirror: `ValveOS/docs/parts-knowledge.md`
+
+It stores engineering knowledge keyed to the PART (`partId` = the app's `STEPS` id;
+Rajdeep sub-code stored as `itemSubCode`), NEVER to a step or a single manual. Configs
+are thin recipes of partIds + which interfaces mate; they pull tool/torque/check content
+from this database at render time.
+
+Rules:
+- Any chat that analyzes a new drawing, datasheet, config, or part must capture the reusable
+  part-level facts (interfaces, tools, fasteners, checks, hookups, confirmed specs + source)
+  into this database. Do not leave knowledge trapped in a chat or a config's step list.
+  Reuse existing part records; never duplicate a part.
+- Populate per part and per interface, not per assembly. Knowledge resolves most-specific-first:
+  part -> relationship -> interfaceRule (ISO 5211 / NAMUR / VDI-VDE 3845) -> categoryDefault.
+- SAFETY (absolute): never invent a torque, fastener size, or spec. Unconfirmed = `null`,
+  confidence `placeholder`/`unknown`, and add it to `openQuestions`. A wrong torque on a
+  pressure valve is a real hazard.
+- The database is commanded from the dedicated parts-knowledge chat. Reconcile all edits there.
+  End every session that touches it with: what changed + the current open-questions list.
+
+Status 2026-07-14: Config 1 (BV1121-PA1019-TP0026-PN00) populated first pass. 8 parts, 5
+relationships, interfaceRules + categoryDefaults seeded, 13 open questions (fastener sizes,
+torques, ISO 5211 flange size, a few model/datasheet confirmations) awaiting fitter/OEM input.
+
+Status 2026-07-14 (Config 2): ingested drawing 40mm-BV1121-PA1019-TP0191-CL00.pdf.
+Config 2 = 40 mm L&T ball valve package, FAIL-TO-CLOSE, actuator Valmet RNP80SR40.
+Two NEW parts added with their OWN partIds (kept distinct from Config 1 on purpose - a
+40 mm valve must never inherit 15 mm specs): valve40 (BV1124) and actuator80 (PA1025).
+Accessories reuse Config 1 knowledge (bracket/coupling BK1001, sov SV1007, afr FR1001,
+lsbmount, lsb LB1002, tubing TB1001). Config recipe: data/config02.json. Query/friction
+log: docs/config02-ingestion.md. Now 14 parts, 9 relationships, 18 open questions.
+OPEN DECISION OQ-14: ratify official Config 2 item code (drawing body BV1124-PA1025-TP0026
+vs stale filename BV1121-PA1019-TP0191). Not yet wired into the app (still single-config;
+next step = config switcher + placeholder .glb for valve40 / actuator80).

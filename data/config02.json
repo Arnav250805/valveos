@@ -1,0 +1,32 @@
+{
+  "configId": "config02",
+  "rajdeepItemCode": "BV1124-PA1025-TP0026-CL00",
+  "officialCodePending": true,
+  "codeConflictNote": "Drawing BODY item-code = BV1124-PA1025-TP0026-CL00 (matches the physical 40 mm / RNP80 parts and is stored as such). Drawing number-block + filename = BV1121-PA1019-TP0191-CL00 (Config 1 codes; stale template). Official code to be ratified - see openQuestions OQ-14.",
+  "drawingFile": "drawings/40mm-BV1121-PA1019-TP0191-CL00.pdf",
+  "title": "40 mm L&T ball valve automation package, fail-to-close, spring return",
+  "valveSizeMm": 40,
+  "failSafe": "fail-to-close",
+  "gaDimsMm": { "A": 165, "B": 125, "C": 38, "D": 37, "E": 382, "F": 208, "G": 159 },
+  "poRef": "P0/P067/2026-27/71 dated 15-05-2026",
+  "sequence": [
+    { "stepId": 1, "partId": "valve40",  "mates": [],                                         "note": "Mount the 40 mm bare valve; note ball closed, remove lever, retain nameplate." },
+    { "stepId": 2, "partId": "bracket",  "mates": [{ "to": "valve40",  "interface": "ISO 5211" }], "note": "Fit BK1001 bracket onto the valve first (datum)." },
+    { "stepId": 3, "partId": "coupling", "mates": [{ "to": "valve40",  "interface": "valve stem flats" }], "note": "Seat coupling on stem flats, square tang up." },
+    { "stepId": 4, "partId": "actuator80","mates": [{ "to": "bracket", "interface": "ISO 5211" }, { "to": "coupling", "interface": "actuator pinion drive" }], "note": "Mount RNP80 actuator; verify FAIL-TO-CLOSE orientation." },
+    { "stepId": 5, "partId": "sov",      "mates": [{ "to": "actuator80", "interface": "NAMUR (VDMA 24563)" }], "note": "Fit Rotex SOV to the NAMUR face." },
+    { "stepId": 6, "partId": "afr",      "mates": [{ "to": "sov", "interface": "air train (1/4\" tube)" }], "note": "Fit Shavo AFR; bowl down; feed SOV supply." },
+    { "stepId": 7, "partId": "lsbmount", "mates": [{ "to": "actuator80", "interface": "VDI/VDE 3845" }], "note": "Fit switch-box riser to actuator top." },
+    { "stepId": 8, "partId": "lsb",      "mates": [{ "to": "lsbmount", "interface": "VDI/VDE 3845" }, { "to": "actuator80", "interface": "NAMUR pinion shaft" }], "note": "Fit Valmet KS2V LSB; engage shaft BEFORE tightening nuts." }
+  ],
+  "tests": [
+    { "test": "Body hydro", "value": "30 bar water", "std": "ISO 5208" },
+    { "test": "Seat leakage", "value": "6 bar air" },
+    { "test": "Stroke setting" },
+    { "test": "SOV function test" },
+    { "test": "Limit-switch calibration" }
+  ],
+  "reusedFromConfig1": ["bracket (BK1001)", "coupling (BK1001)", "sov (SV1007)", "afr (FR1001)", "lsbmount", "lsb (LB1002)", "tubing (TB1001)"],
+  "newParts": ["valve40 (BV1124)", "actuator80 (PA1025)"],
+  "provenance": { "createdBy": "config02 ingestion chat", "date": "2026-07-14", "source": "drawings/40mm-BV1121-PA1019-TP0191-CL00.pdf (Rev 0)" }
+}

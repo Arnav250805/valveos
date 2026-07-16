@@ -62,7 +62,7 @@ ValveOS/
 ```
 
 ## Config BV1121 — bill of materials
-15 mm L&T L1RF1C valve · Valmet RNP50SR40 actuator (fail-to-open, spring return) ·
+15 mm L&T L1RF1C valve · Valmet RNP50SR40 actuator (fail-to-close, spring return) ·
 Rotex 30318 NAMUR SOV 24 VDC · Valmet KS2V limit switch box · Shavo SB10 AFR · BK1001 bracket + coupling.
 (The 3D parts are generic stand-ins for the demo; real STEP files can be swapped in later.)
 
@@ -70,7 +70,7 @@ Rotex 30318 NAMUR SOV 24 VDC · Valmet KS2V limit switch box · Shavo SB10 AFR �
 40 mm L&T L1RF1C valve (BV1124) · Valmet RNP80SR40CA1GD actuator (PA1025, FAIL-TO-CLOSE) ·
 Rotex 30318 NAMUR SOV 24 VDC (SV1007) · Valmet KS2V limit switch box (LB1002) ·
 Shavo SB10 AFR (FR1001) · BK1001 bracket + coupling · SS304 tubing (TB1001).
-Fail-action is OPPOSITE to Config 1 (Config 1 is fail-to-open). Source drawings already in
+Fail-action of Config 1 corrected to FAIL-TO-CLOSE on 2026-07-16; the 'OPPOSITE to Config 1' framing below now NEEDS REVIEW (Config 2 is also fail-to-close). Source drawings already in
 repo: drawings/40mm-BV1121-PA1019-TP0191-CL00.pdf, drawings/RNP080DN00DA1GD.pdf (actuator).
 
 ## Current phase: assembly flow
@@ -89,7 +89,7 @@ placed at the bolted joints with torque callouts.
 ## Parts-knowledge database (standing rule)
 There is ONE canonical parts-knowledge database:
 - machine source of truth: `ValveOS/data/parts-knowledge.json`
-- read-by-eye mirror: `ValveOS/docs/parts-knowledge.md`
+- read-by-eye viewer: `ValveOS/data/parts-knowledge.html` (open in a browser)
 
 It stores engineering knowledge keyed to the PART (`partId` = the app's `STEPS` id;
 Rajdeep sub-code stored as `itemSubCode`), NEVER to a step or a single manual. Configs
@@ -123,3 +123,28 @@ log: docs/config02-ingestion.md. Now 14 parts, 9 relationships, 18 open question
 OPEN DECISION OQ-14: ratify official Config 2 item code (drawing body BV1124-PA1025-TP0026
 vs stale filename BV1121-PA1019-TP0191). Not yet wired into the app (still single-config;
 next step = config switcher + placeholder .glb for valve40 / actuator80).
+
+## Update 2026-07-14 (evening) - real valve, full step list, live editor
+- **Real STEP valve + lever removal.** Config's valve is now converted from a real STEP
+  file (ball valve with lever). The lever was isolated geometrically (cascadio fused it
+  into one mesh) and co-registered, so step A2 lifts the actual handle off. Assets:
+  app/public/valve_bv.glb + lever_bv.glb. Conversion/split scripts run in the sandbox.
+- **Full golden step list.** The player now shows every step from
+  docs/golden-steplist-config01.md (A1..H3 + round-2 tests T1..T6), not the old 8, with a
+  type badge (3D / 3D remove / Info / Combine / Test) per card. Steps C1/C2 and D1/D2 order
+  corrected per Arnav.
+- **Colour-coding.** Each major component has its own colour; sub-parts are a lighter
+  shade of the same hue. New sub-part placeholder meshes: lever, cap, gauge, lplate,
+  namurplate, airpipe, boltset (trimesh, in app/public + parts).
+- **Upper assembly orientation** rigidly turned 90 deg so the actuator rack runs parallel
+  to the valve bore; bracket + coupling auto-seated on the measured stem top.
+- **LIVE LAYOUT EDITOR (new feature).** Top-right "Edit" toggle. Modes: Move (grab + drag),
+  Rotate (drag to spin/tilt), Scale (drag to resize). Click a part or pick from the
+  dropdown. "Lock all + copy" copies the full transform set to clipboard + console and
+  persists to localStorage; "Reset all edits" reverts. Edits are PER-CONFIG (Config 2 has
+  its own layout). Durable defaults bake into DEFAULT_TF in app/src/App.jsx.
+- **Authoring aid:** an offline renderer (outputs/render_app.py etc.) reproduces the app's
+  exact transform pipeline so layout can be verified without the browser.
+- NOTE: Config's valve is currently the DN100 lever valve (stand-in to prove the mechanic);
+  per-config real valves still to be assigned. Gauge/air-pipe placement approximate.
+

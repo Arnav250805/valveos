@@ -179,41 +179,21 @@ function meshActive(m, step) {
   return step >= m.showFrom && step < (m.hideFrom || Infinity);
 }
 
-function Scene({ meshes, step, target, ov }) {
+function Scene({ items, step, target }) {
   return (
     <>
       <ambientLight intensity={0.3} />
-      <directionalLight
-        position={[4, 8, 5]}
-        intensity={2.3}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-      />
+      <directionalLight position={[4, 8, 5]} intensity={2.3} castShadow shadow-mapSize={[2048, 2048]} />
       <directionalLight position={[-6, 3, -4]} intensity={0.7} />
       <directionalLight position={[0, 2, -6]} intensity={0.9} />
-
       <Suspense fallback={null}>
-        {meshes.map((m) => {
-          const t = ov[m.id] || {};
-          return (
-            <group key={m.id}>
-              <Part {...m} position={t.position || m.position} rotation={t.rotation || m.rotation} scale={t.scale ?? m.scale} revealed={meshActive(m, step)} />
-              {(m.extras || []).map((e, j) => {
-                const eid = m.id + "__x" + j;
-                const et = ov[eid] || {};
-                return (
-                  <Part key={eid} {...e} position={et.position || e.position} rotation={et.rotation || e.rotation} scale={et.scale ?? e.scale} revealed={meshActive(m, step)} />
-                );
-              })}
-            </group>
-          );
-        })}
+        {items.map((it) => (
+          <Part key={it.id} url={it.url} color={it.color} recenter={it.recenter}
+            position={it.position} rotation={it.rotation} scale={it.scale} insert={it.insert || [0, 0, 0]}
+            revealed={meshActive(it, step)} />
+        ))}
       </Suspense>
-
-      <Suspense fallback={null}>
-        <Environment preset="warehouse" />
-      </Suspense>
-
+      <Suspense fallback={null}><Environment preset="warehouse" /></Suspense>
       <ContactShadows position={[0, 0, 0]} opacity={0.5} scale={0.9} blur={2.5} far={0.6} />
       <OrbitControls makeDefault target={target} />
     </>
@@ -233,15 +213,25 @@ const DEFAULT_TF = {
 function loadOverrides() {
   try { return { ...DEFAULT_TF, ...JSON.parse(localStorage.getItem("valveos_tf") || "{}") }; } catch (e) { return { ...DEFAULT_TF }; }
 }
-function flatten(meshes, ov) {
+const DEFAULT_ADDL = {
+  // config02: [ { id, url, color, showFrom, position, rotation, scale }, ... ]
+};
+function loadAddl() {
+  try { return { ...DEFAULT_ADDL, ...JSON.parse(localStorage.getItem("valveos_addl") || "{}") }; } catch (e) { return { ...DEFAULT_ADDL }; }
+}
+function buildItems(meshes, ov, addl) {
   const items = [];
   meshes.forEach((m) => {
     const t = ov[m.id] || {};
-    items.push({ id: m.id, url: m.url, color: m.color, recenter: m.recenter, position: t.position || m.position, rotation: t.rotation || m.rotation, scale: t.scale ?? m.scale });
+    items.push({ id: m.id, url: m.url, color: m.color, recenter: m.recenter, insert: m.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, removable: false, position: t.position || m.position, rotation: t.rotation || m.rotation, scale: t.scale ?? m.scale });
     (m.extras || []).forEach((e, j) => {
       const id = m.id + "__x" + j; const et = ov[id] || {};
-      items.push({ id, url: e.url, color: e.color, recenter: e.recenter, position: et.position || e.position, rotation: et.rotation || e.rotation, scale: et.scale ?? e.scale });
+      items.push({ id, url: e.url, color: e.color, recenter: e.recenter, insert: e.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, removable: false, position: et.position || e.position, rotation: et.rotation || e.rotation, scale: et.scale ?? e.scale });
     });
+  });
+  (addl || []).forEach((a) => {
+    const t = ov[a.id] || {};
+    items.push({ id: a.id, url: a.url, color: a.color, recenter: a.recenter, insert: a.insert || [0, 0, 0], showFrom: a.showFrom, hideFrom: a.hideFrom, removable: true, position: t.position || a.position, rotation: t.rotation || a.rotation, scale: t.scale ?? a.scale });
   });
   return items;
 }
@@ -326,8 +316,10 @@ function EditScene({ items, target, selected, setSelected, mode, setPos, setRot,
   );
 }
 
-function EditorPanel({ items, selected, setSelected, mode, setMode, lockAndCopy, resetAll, label }) {
+function EditorPanel({ items, selected, setSelected, mode, setMode, lockAndCopy, resetAll, label, addCopy, deleteSel }) {
   const modes = [["grab", "Move"], ["rotate", "Rotate"], ["scale", "Scale"]];
+  const sel = items.find((i) => i.id === selected);
+  const canDelete = sel && sel.removable;
   return (
     <div style={panelStyle}>
       <div style={{ fontSize: 12, fontWeight: 700, color: "#7ea2ff", marginBottom: 2 }}>EDIT LAYOUT</div>
@@ -342,8 +334,12 @@ function EditorPanel({ items, selected, setSelected, mode, setMode, lockAndCopy,
           <button key={mo} onClick={() => setMode(mo)} style={{ ...miniBtn, ...(mode === mo ? segActive : {}) }}>{lab}</button>
         ))}
       </div>
+      <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
+        <button onClick={addCopy} disabled={!selected} style={{ ...miniBtn, opacity: selected ? 1 : 0.4 }}>+ Add copy</button>
+        <button onClick={deleteSel} disabled={!canDelete} style={{ ...miniBtn, opacity: canDelete ? 1 : 0.4, color: canDelete ? "#ff9b9b" : "#e8ecf1" }}>Delete</button>
+      </div>
       <div style={{ fontSize: 11, opacity: 0.55, marginTop: 12, lineHeight: 1.5 }}>
-        <b>Move</b>: grab a part and slide it. <b>Rotate</b>: drag left/right to spin, up/down to tilt. <b>Scale</b>: drag up/down to resize. Orbit the camera on empty space. Edits apply to this config only.
+        <b>Move / Rotate / Scale</b>: drag the selected part. <b>Add copy</b> duplicates it (one bolt into four) - drag each copy into place. <b>Delete</b> removes a copy. Orbit on empty space. Per-config.
       </div>
       <button onClick={lockAndCopy} style={{ ...btn, width: "100%", padding: "12px 0", marginTop: 14, fontSize: 15, background: "#2f9e57" }}>Lock all + copy</button>
       <button onClick={resetAll} style={{ ...miniBtn, width: "100%", marginTop: 8 }}>Reset all edits</button>
@@ -366,16 +362,19 @@ export default function App() {
   const [mode, setMode] = useState("grab");
   const [selected, setSelected] = useState(null);
   const [ovAll, setOvAll] = useState(loadOverrides);
+  const [addlAll, setAddlAll] = useState(loadAddl);
   const [toast, setToast] = useState("");
 
   const config = CONFIGS[configKey];
   const ov = ovAll[configKey] || {};
+  const addl = addlAll[configKey] || [];
   const steps = config.steps;
   const total = steps.length;
   const current = steps[step - 1];
-  const items = useMemo(() => flatten(config.meshes, ov), [config, ov]);
+  const items = useMemo(() => buildItems(config.meshes, ov, addl), [config, ov, addl]);
 
   useEffect(() => { try { localStorage.setItem("valveos_tf", JSON.stringify(ovAll)); } catch (e) {} }, [ovAll]);
+  useEffect(() => { try { localStorage.setItem("valveos_addl", JSON.stringify(addlAll)); } catch (e) {} }, [addlAll]);
 
   function pickConfig(k) { setConfigKey(k); setStep(1); setSelected(null); }
   function onChange(id, obj) {
@@ -392,24 +391,36 @@ export default function App() {
   function setScale(id, sc) {
     setOvAll((prev) => { const c = prev[configKey] || {}; return { ...prev, [configKey]: { ...c, [id]: { ...(c[id] || {}), scale: sc } } }; });
   }
+  function addCopy() {
+    const src = items.find((i) => i.id === selected);
+    if (!src) return;
+    const id = src.id.split("#")[0] + "#" + Date.now().toString(36);
+    const inst = { id, url: src.url, color: src.color, recenter: src.recenter, insert: src.insert || [0, 0, 0], showFrom: src.showFrom, hideFrom: src.hideFrom, position: [r4(src.position[0] + 0.03), src.position[1], r4(src.position[2] + 0.03)], rotation: [src.rotation[0], src.rotation[1], src.rotation[2]], scale: src.scale };
+    setAddlAll((prev) => ({ ...prev, [configKey]: [...(prev[configKey] || []), inst] }));
+    setSelected(id);
+  }
+  function deleteSel() {
+    if (!selected) return;
+    setAddlAll((prev) => ({ ...prev, [configKey]: (prev[configKey] || []).filter((a) => a.id !== selected) }));
+    setOvAll((prev) => { const c = { ...(prev[configKey] || {}) }; delete c[selected]; return { ...prev, [configKey]: c }; });
+    setSelected(null);
+  }
   function lockAndCopy() {
-    const list = flatten(config.meshes, ov);
-    const lines = list.map((it) => "  " + it.id + ": { position: [" + it.position.map(r4).join(", ") + "], rotation: [" + it.rotation.map(r2).join(", ") + "], scale: " + r3(it.scale) + " },");
-    const snippet = "TRANSFORMS = {\n" + lines.join("\n") + "\n};";
+    const snippet = JSON.stringify({ config: configKey, tf: ov, addl: addl }, null, 2);
     try { navigator.clipboard.writeText(snippet); } catch (e) {}
-    console.log("[" + configKey + "] " + snippet);
+    console.log(snippet);
     setEdit(false); setSelected(null);
-    setToast("Locked. Full transform set copied to clipboard and logged to the console.");
+    setToast("Locked. Layout + added copies copied to clipboard and logged to the console.");
     setTimeout(() => setToast(""), 4500);
   }
-  function resetAll() { setOvAll((prev) => ({ ...prev, [configKey]: {} })); setSelected(null); }
+  function resetAll() { setOvAll((prev) => ({ ...prev, [configKey]: {} })); setAddlAll((prev) => ({ ...prev, [configKey]: [] })); setSelected(null); }
 
   return (
     <div style={{ width: "100vw", height: "100vh", background: "#20242b", position: "relative" }}>
       <Canvas key={configKey} shadows camera={{ position: config.camera, fov: 45 }} onPointerMissed={() => edit && setSelected(null)}>
         {edit
           ? <EditScene items={items} target={config.target} selected={selected} setSelected={setSelected} mode={mode} setPos={setPos} setRot={setRot} setScale={setScale} />
-          : <Scene meshes={config.meshes} step={step} target={config.target} ov={ov} />}
+          : <Scene items={items} step={step} target={config.target} />}
       </Canvas>
 
       {/* --- config switcher + edit toggle --- */}
@@ -425,7 +436,7 @@ export default function App() {
       </div>
 
       {edit ? (
-        <EditorPanel items={items} selected={selected} setSelected={setSelected} mode={mode} setMode={setMode} lockAndCopy={lockAndCopy} resetAll={resetAll} label={config.label} />
+        <EditorPanel items={items} selected={selected} setSelected={setSelected} mode={mode} setMode={setMode} lockAndCopy={lockAndCopy} resetAll={resetAll} label={config.label} addCopy={addCopy} deleteSel={deleteSel} />
       ) : (
         <>
           {/* --- step info panel --- */}

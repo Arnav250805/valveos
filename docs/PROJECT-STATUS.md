@@ -1,6 +1,34 @@
 # ValveOS — project status & handoff (read this first)
 
-_Last updated: 2026-07-14. Single source of truth for any new chat._
+_Last updated: 2026-07-17. Single source of truth for any new chat._
+
+## 2026-07-20 — Positioning, ICP & solution framing (business brainstorm)
+
+**Company shape (settled).** ValveOS is a software company. Rajdeep is customer zero, test lab, and case study, not the product. We are not building a software-enabled VAC. The up-market target is component OEMs (valve, actuator, gearbox, pump makers) whose larger, variant-heavy lines are the real prize. VAC is the entry point purely because of immediate floor and technician access.
+
+**Product primitive (settled).** The atomic unit is a part-with-an-interface, not a step and not a config. The parts-knowledge DB (Section 11) is the mechanism and the moat. The automated work instruction is the output customers see and pay for. Instructions are generated from part-level knowledge, not authored per config: fix a torque once on the part, every config using it corrects. A viewer-only competitor can match one config's output. They cannot match that our tenth config is nearly free.
+
+**Tech thesis (sharpened).** Valve automation is a configuration business with known, repeating sequences. Template-replay substitutes for Dirac's auto-sequencing. We skip exactly one subsystem (geometric auto-sequencing), and only because the domain is repetitive. Everything else Dirac does (3D viewer, knowledge pinned to geometry, auto-apply-on-reappear flywheel, operator floor view, feedback-to-engineering loop) we build. Same product vision, one subsystem dropped.
+- Up-market scaling answer: parametric family templates. Author a product family's assembly logic once; size, spring, and trim variants inherit via parameter sets that resolve through the knowledge hierarchy. Collapses authoring from roughly one-per-variant to one-per-family (e.g. 300 variants to ~20 templates). This is not information generation. It is authoring-cost collapse plus consistency enforcement.
+- Auto-sequencing stays "not yet, not never." Genuinely needed only for true NPI / first-article (novel design, no parent template): a minority of OEM volume, Dirac's turf, not chased early. Defensible line at any scale: we own repeat and variant production via template inheritance; we do not chase novel-NPI sequencing.
+
+**What we actually sell (two paid outcomes, not five features).**
+1. Get a build done right by someone who isn't an expert: onboarding and ramp time, variant-changeover error, QC rejects and rework.
+2. Prove it was done right: serial-tied traceability.
+The 3D animation is the delivery mechanism, not the thing paid for. Changeover value is specifically provable SOP adherence: we replace the fragile laminated SOP with a live, enforced, logged one. (Initial skepticism on changeover was that seasoned operators plus SOPs already prevent errors; the reframe is that the SOP is the thing we are replacing, and its adherence today is unprovable.)
+
+**ICP (defined).** High-mix, configure- or engineer-to-order Indian assembler; medium-to-low volume per variant; wrong build is expensive (field failure, safety, scrapped shipment); dependent on scarce senior tribal knowledge; ideally selling into export or regulated end-markets (oil & gas, pharma, power). Master variable is mix times consequence-of-error, not volume. Rajdeep is a true small instance of this ICP: "we are our own ICP."
+- Tier 1 (bullseye): flow control / valve automation & instrumentation; fluid-power and pneumatic/hydraulic skid builders; instrumentation and analyzer-panel builders.
+- Tier 2 (strong, larger, slower): actuator and gearbox OEMs (the parametric-template case); pump and compressor package builders; MCC / control-panel / switchgear (knowledge-resolution core applies, less 3D-mechanical).
+- Anti-ICP (walk away): high-volume-low-mix producers; low-consequence consumer assembly. 3D instructions there are a vitamin.
+
+**SISP guardrail.** Do not sell 3D instructions on stable, expert-run, error-cheap lines. Painkillers live at the edges: onboarding, changeover, rework, traceability. If a prospect's line is fine, walk, no matter the logo.
+
+**Why now (macro).** Export pressure imposes traceability that domestic sales never did. Labor churn and wage inflation make the "runs on two senior guys" model visibly fragile. Both push our two outcomes from vitamin toward painkiller. We arrive as the pain sharpens; we do not manufacture it.
+
+**Validation (in flight).** ICP fit scorecard built (`valveos-icp-scorecard.html`: weighted gauge, SISP gate, unscored reality-check). Next actions: score Rajdeep plus 2 to 3 Tier-1 names; ask each owner where quality cost and onboarding cost actually land; confirm ICP or re-skew toward the export/regulated axis.
+
+2026-07-17. Single source of truth for any new chat._
 
 ## One-liner
 A working browser 3D assembly viewer for valve automation. It plays an animated,
@@ -148,3 +176,28 @@ next step = config switcher + placeholder .glb for valve40 / actuator80).
 - NOTE: Config's valve is currently the DN100 lever valve (stand-in to prove the mechanic);
   per-config real valves still to be assigned. Gauge/air-pipe placement approximate.
 
+
+## Priorities & backlog — updated 2026-07-17 (current plan)
+
+### Recent progress (through Config 2) — treat as the current baseline
+- Config 2 (40 mm, fail-to-close) plays in the 3D tool via template replay (`toConfig2` off the golden sequence). Distinct partIds `valve40` / `actuator80` so a 40 mm build never inherits 15 mm specs. Recipe: `data/config02.json`.
+- Live layout editor (Move / Rotate / Scale, per-config transforms, copy + persist) is in the app.
+- Real STEP valve + lever teardown (A2 lifts the handle); full golden step list (A1..H3, T1..T6) with type badges; colour-coding per component.
+- Fail-action corrected project-wide to FAIL-TO-CLOSE (Config 1) on 2026-07-16.
+- Parts-knowledge DB is live and being populated from OEM datasheets. OEM-confirmed so far: actuator (Valmet) and valve (L&T) — pressures (8 barg max), spring SR40 = 4 bar, valve top ISO 5211 F03 (M5), actuator-to-bracket F05 (M6), 14 mm bi-square drive. Browser viewer: `data/parts-knowledge.html`. ~11 open questions remain (mostly torques + SOV/LSB/AFR specs).
+
+### Critical path to the investor demo (priority order)
+1. **Solidify Config 2 first.** Assign the per-config REAL valve (it is currently a DN100 lever stand-in), and ratify the Config 2 item code (BV1124-PA1025-TP0026 vs the stale filename). Lock Config 2 so it is demo-solid before adding breadth.
+2. **Operator / tablet view** — big Next/Prev, check-off, readable on a shop tablet. This is an on-camera surface.
+3. **Configurator front door** — dropdowns (valve / actuator / accessories) mapped to item sub-codes, loading the matching config. The "magic" moment.
+4. **FLOOR SHOOT (time-boxed — protect it).** Baseline-time a real build, then film a junior technician building from the tablet, log time vs baseline. This footage + the before/after number is the pitch. Shoot it while floor access is comfortable, NOT in the final week.
+5. **Investor assets** — floor footage, before/after (old PowerPoint/verbal vs animated 3D), metrics mirroring the Ancra/Spudnik arc.
+
+### Backlog (worth doing, deferred until after the floor shoot)
+- **UNIFY the manual and the 3D tool onto ONE generated source.** Today the Config 1 manual is a hand-made PDF (`docs/ValveOS-Config1-Assembly-Manual.pdf`) and the 3D tool is data-driven — two sources for the same instructions. Target: generate BOTH the 3D build and a printable/tablet manual from the golden steps + parts-knowledge, so any config produces both for free. Never hand-author a per-config manual. Build this AFTER the floor shoot.
+- **Finish the datasheet pass** for the remaining Config 1 hero parts (Rotex 30318 SOV, Neles/KS2V LSB, Shavo SB10 AFR + Marsh gauge). Leave low-value open questions as placeholders; do not chase completeness.
+- **Cloud backend (DB + API) only when earned** — i.e. when the floor tablet needs to WRITE data back (cycle times, sign-offs, serials) or multiple people edit live. Until then, JSON-in-repo + Vercel is correct. Migration later is a swap, not a rewrite (same schema into Postgres JSONB / a document store).
+- **Resolve OQ-15** — Config 1 and Config 2 are both fail-to-close now, so the "opposite" contrast is broken; decide whether Config 2 flips to fail-open or the framing is dropped.
+
+### Config 3 (future)
+Gearboxes + MORs (Q-Tork). Datasheet parked at `docs/Datasheets/QTork Technical Handbook.pdf`; extract part records only once Config 3's BOM is defined.

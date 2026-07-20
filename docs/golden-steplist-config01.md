@@ -1,7 +1,7 @@
 # Golden step list (FINAL v1) — Config BV1121-PA1019-TP0026-PN00
 ### Lego-manual structure: build sub-assemblies independently, then combine
 
-**15 mm L&T ball valve automation package. Fail-to-open, spring return.**
+**15 mm L&T ball valve automation package. Fail-to-close, spring return.**
 Merged from the QC team's written flow, the Granola meeting notes, and the video-observations
 file. Where sources conflicted, the real .mov was treated as ground truth.
 

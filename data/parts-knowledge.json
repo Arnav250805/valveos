@@ -7,12 +7,10 @@
     "safetyRule": "Never fabricate a torque, fastener size, or spec. Unconfirmed values are null with confidence 'placeholder' or 'unknown' and listed in openQuestions.",
     "canonicalHome": "This file is edited only from the parts-knowledge command chat.",
     "schemaVersion": "1.0",
-    "lastUpdated": "2026-07-14",
+    "lastUpdated": "2026-07-16",
     "populatedConfigs": [
-      "BV1121-PA1019-TP0026-PN00 (Config 1, 15 mm L&T ball valve package, fail-to-open)",
-      "BV1124-PA1025-TP0026-CL00 (Config 2, 40 mm L&T ball valve package, fail-to-close) [official code pending OQ-14]"
-    ],
-    "schemaNote": "2026-07-14: added optional 'attributes' object on parts for confirmed nameplate specs from drawings (additive; reconcile in parts-knowledge chat)."
+      "BV1121-PA1019-TP0026-PN00 (Config 1, 15 mm L&T ball valve package, fail-to-close)"
+    ]
   },
   "parts": {
     "valve": {
@@ -24,18 +22,20 @@
       "oem": {
         "make": "L&T",
         "model": "L1RF1C-015",
-        "datasheetRef": "drawings/15mm-BV1121-PA1019-TP0026-PN00.pdf"
+        "datasheetRef": "drawings/15mm-BV1121-PA1019-TP0026-PN00.pdf; docs/Datasheets/L&T-Process-Ball-Valves_New.pdf"
       },
       "interfaces": [
         {
           "standard": "ISO 5211",
-          "size": null,
-          "role": "actuator mount (top flange)"
+          "size": "F03 (DN15, Class 150/300)",
+          "role": "actuator mount (integral ISO 5211 top flange, M5 threads)",
+          "source": "L&T Process Ball Valves catalogue p9 (single-piece regular-bore dimensions) + p5 (integral ISO 5211 flange)"
         },
         {
           "standard": "ASME B16.5 #150 (family spec, confirm for 15 mm)",
           "size": "15 mm / DN15",
-          "role": "process connection (flanged)"
+          "role": "process connection (flanged); bore 11 mm (regular bore), face-to-face 108 mm (Cl150)",
+          "source": "L&T catalogue p9"
         }
       ],
       "tools": [
@@ -71,6 +71,12 @@
           "why": "Preserves reference for fail-action orientation later.",
           "failureMode": "Actuator fitted to wrong open/close datum.",
           "source": "golden-steplist-config01.md A2"
+        },
+        {
+          "text": "Design break torque approx 5 Nm at DN15 (value WITHOUT safety factor per the catalogue note). The RNP50-SR40 actuator delivers 9-13 Nm at 4 bar, so it is adequately sized with a safety margin.",
+          "why": "Confirms the actuator can drive the valve at the AFR-set 4 bar.",
+          "failureMode": "Undersized actuator would stall the valve.",
+          "source": "L&T catalogue p7 (valve torque data) vs Valmet catalogue p5"
         }
       ],
       "checks": [
@@ -88,8 +94,70 @@
         "app/public/valve.glb"
       ],
       "provenance": {
+        "lastUpdated": "2026-07-17",
+        "overallConfidence": "OEM-confirmed (L&T catalogue): ISO 5211 top flange = F03, bore 11 mm RB, face-to-face 108 mm, design torque ~5 Nm. Open: stem square size (not in catalogue tables); process-flange bolt spec."
+      }
+    },
+    "lever": {
+      "partId": "lever",
+      "itemSubCode": null,
+      "displayName": "Valve lever / hand-operating handle (removed during automation)",
+      "category": "handle",
+      "status": "modeled",
+      "oem": {
+        "make": "L&T (supplied with the BV1121 valve)",
+        "model": "",
+        "datasheetRef": ""
+      },
+      "interfaces": [
+        {
+          "standard": "valve stem",
+          "size": null,
+          "role": "hand operation (removed for automation)"
+        }
+      ],
+      "tools": [
+        "ring spanner"
+      ],
+      "fasteners": [
+        {
+          "role": "lever / stem nut",
+          "size": null,
+          "count": 1,
+          "type": null,
+          "torqueNm": null,
+          "pattern": null,
+          "source": "golden-steplist-config01.md A2",
+          "confidence": "placeholder"
+        }
+      ],
+      "rules": [
+        {
+          "text": "Removed during automation: only the lever and nameplate come off (the valve is not split). Keep the nameplate; refit the stem nut.",
+          "why": "The actuator replaces manual operation; the nameplate is reused for final tagging.",
+          "failureMode": "Lost nameplate; stem nut left off.",
+          "source": "golden-steplist-config01.md A2"
+        },
+        {
+          "text": "Note the ball position (closed) before removing the lever.",
+          "why": "Preserves the datum for fail-action orientation.",
+          "failureMode": "Actuator fitted to the wrong open/close datum.",
+          "source": "golden-steplist-config01.md A2"
+        }
+      ],
+      "checks": [
+        {
+          "text": "Nameplate retained; ball position noted; stem nut refitted.",
+          "acceptance": "Nameplate set aside; stem nut back on."
+        }
+      ],
+      "hookups": [],
+      "media": [
+        "app/public/lever.glb"
+      ],
+      "provenance": {
         "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity confirmed; all fastener/torque values placeholder"
+        "overallConfidence": "removal step confirmed; the lever .glb is a generated placeholder (swap real CAD later)"
       }
     },
     "bracket": {
@@ -106,13 +174,14 @@
       "interfaces": [
         {
           "standard": "ISO 5211",
-          "size": null,
+          "size": "valve top is ISO 5211 F03 (M5); Rajdeep bracket mounts to stop-plate ears (2x M6 per golden A3)",
           "role": "valve stop-plate mount (bracket underside)"
         },
         {
           "standard": "ISO 5211",
-          "size": null,
-          "role": "actuator base mount (bracket top)"
+          "size": "F05 (M6)",
+          "role": "actuator base mount (bracket top)",
+          "source": "Arnav 2026-07-17 (actuator bolts M6 = F05)"
         }
       ],
       "tools": [
@@ -159,8 +228,8 @@
         "app/public/bracket.glb"
       ],
       "provenance": {
-        "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity confirmed; fastener size/torque placeholder"
+        "lastUpdated": "2026-07-17",
+        "overallConfidence": "custom part; actuator-side mount = F05/M6 confirmed (Arnav). Valve-side screw size/torque still open (OQ-02)."
       }
     },
     "coupling": {
@@ -220,58 +289,83 @@
     "actuator": {
       "partId": "actuator",
       "itemSubCode": "PA1019",
-      "displayName": "Pneumatic actuator, rack & pinion, spring return (fail-to-open)",
+      "displayName": "Pneumatic actuator, rack & pinion, spring return (fail-to-close / spring-to-close)",
       "category": "actuator",
       "status": "modeled",
       "oem": {
         "make": "Valmet (Neles)",
         "model": "RNP50SR40",
-        "datasheetRef": ""
+        "datasheetRef": "docs/Datasheets/Valmet Actuator Catalogue.pdf (IMO-218EN, Issue 5/2022)"
       },
       "interfaces": [
         {
           "standard": "ISO 5211",
-          "size": null,
-          "role": "valve mount (base)"
+          "size": "F03 and F05 (dual drilling)",
+          "role": "valve mount (base). Offers dual F03/F05; Rajdeep uses F05 (M6) to the bracket [Arnav 2026-07-17]",
+          "source": "Valmet catalogue p25 (dimensions, RNP50)"
+        },
+        {
+          "standard": "ISO 5211 bi-square drive",
+          "size": "14 mm A/F",
+          "role": "pinion female drive (to coupling)",
+          "source": "Valmet catalogue p25 (N A/F=14) + p28 (shaft-key type D)"
         },
         {
           "standard": "NAMUR (VDMA 24563)",
-          "size": null,
-          "role": "SOV direct mount (side face)"
+          "size": "2x M5; 1/4\" air port",
+          "role": "SOV direct mount",
+          "source": "Valmet catalogue p25 (M5x8 deep; port T=1/4\")"
         },
         {
           "standard": "VDI/VDE 3845",
           "size": null,
-          "role": "accessory mount (top, for LSB riser)"
+          "role": "accessory mount (top, for limit switch box)"
         }
       ],
       "tools": [
-        "spanner (size to confirm)"
+        "spanner (size per fastener)",
+        "Allen key (end-cap bolts #9 = M6)"
       ],
       "fasteners": [
         {
-          "role": "base bolts (actuator to bracket)",
-          "size": null,
+          "role": "valve-mount bolts (ISO 5211 base to bracket)",
+          "size": "M6 (ISO 5211 F05)",
           "count": 4,
-          "type": null,
+          "type": "socket-head",
           "torqueNm": null,
           "pattern": "cross",
-          "source": "golden-steplist H2 (4 bolts; size/torque placeholder)",
-          "confidence": "placeholder"
+          "source": "size confirmed M6/F05 by Arnav 2026-07-17; torque not in Valmet catalogue (set per bolt grade / Rajdeep standard)",
+          "confidence": "size confirmed; torque placeholder"
+        },
+        {
+          "role": "actuator end-cap / body bolts (part #9, service)",
+          "size": "M6",
+          "count": null,
+          "type": "socket-head",
+          "torqueNm": 8,
+          "pattern": null,
+          "source": "Valmet catalogue p16 tightening-torque table (RNP40-80 = M6, 8 Nm)",
+          "confidence": "confirmed (internal service torque; NOT the valve-mount torque)"
         }
       ],
       "rules": [
         {
-          "text": "Remove the top cap / position indicator and wipe clean before fitting the switch-box riser.",
-          "why": "Exposes the NAMUR pinion drive for the LSB shaft.",
+          "text": "Remove the top cap / position indicator and wipe clean before fitting the limit switch box.",
+          "why": "Exposes the ISO 5211 pinion drive for the LSB shaft.",
           "failureMode": "LSB cannot engage the pinion.",
           "source": "golden-steplist-config01.md B1"
         },
         {
-          "text": "Confirm fail-to-open (spring-return) orientation before final torque.",
+          "text": "SR40 = 4.0 barg spring version (matches AFR set 4 bar). Action code C = spring-to-CLOSE, so the package is FAIL-CLOSE: the valve closes on loss of air. Confirmed by Arnav 2026-07-16. Air supply must meet the spring rating and must not exceed 8 barg (max supply); design pressure 10 barg.",
+          "why": "The spring is sized for 4.0 bar; under-supply will not complete the stroke, over-supply beyond 8 bar risks the pressure-retaining parts.",
+          "failureMode": "Incomplete stroke, or overpressure damage.",
+          "source": "Valmet catalogue p4 (pressures) + p28 (order code C) + Arnav 2026-07-16"
+        },
+        {
+          "text": "Confirm FAIL-TO-CLOSE (spring-to-close) orientation before final torque: the valve must go CLOSED on air loss.",
           "why": "Wrong orientation reverses the fail-action of the whole package.",
           "failureMode": "Valve fails to the wrong position on air loss (safety).",
-          "source": "golden-steplist-config01.md H1/H2"
+          "source": "golden-steplist-config01.md H1/H2; fail-action per Arnav 2026-07-16"
         }
       ],
       "checks": [
@@ -287,15 +381,15 @@
       "hookups": [
         {
           "type": "air",
-          "detail": "Air supply via AFR; set pressure 4 bar for this build. Actuator operating pressure range to confirm from RNP50SR40 datasheet."
+          "detail": "Operating media air/nitrogen. SR40 spring rated 4.0 barg (matches AFR set 4 bar). Max supply 8 barg, design 10 barg. Output torque RNP50-SR40 at 4 bar = 9-13 Nm (min-max over stroke). IP66/67, -20..+80 C (temp code G). Source: Valmet catalogue p4, p5."
         }
       ],
       "media": [
         "app/public/actuator.glb"
       ],
       "provenance": {
-        "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity confirmed; operating pressure and fastener/torque unconfirmed"
+        "lastUpdated": "2026-07-16",
+        "overallConfidence": "OEM-confirmed (Valmet catalogue): pressures, spring rating, ISO 5211 flanges F03/F05, 14 mm bi-square drive, NAMUR M5. Fail-action = FAIL-CLOSE (spring-to-close, code C) confirmed by Arnav 2026-07-16. Open: valve-mount torque; F-code resolved: actuator uses F05/M6 to bracket, valve is F03 (Arnav 2026-07-17)."
       }
     },
     "sov": {
@@ -672,196 +766,6 @@
         "lastUpdated": "2026-07-14",
         "overallConfidence": "planned reusable asset; carries torque callout per joint"
       }
-    },
-    "valve40": {
-      "partId": "valve40",
-      "itemSubCode": "BV1124",
-      "displayName": "Bare ball valve, 40 mm, flanged",
-      "category": "valve",
-      "status": "specced (no 3D model yet)",
-      "oem": {
-        "make": "L&T",
-        "model": "L1RF1C-040",
-        "datasheetRef": "drawings/40mm-BV1121-PA1019-TP0191-CL00.pdf"
-      },
-      "attributes": {
-        "sizeMm": 40,
-        "endConnection": "Flanged ASME B16.5 #150",
-        "drilling": "ASME B16.5 #150",
-        "pressureClass": "ASME Class 150",
-        "designStd": "ISO 17292",
-        "faceToFace": "ASME B16.10",
-        "bodyStyle": "2-way, 1-pc, regular bore, floating",
-        "bodyBonnetMaterial": "ASTM A216 Gr. WCB",
-        "ballMaterial": "ASTM A351 Gr. CF8M / ASTM A182 Gr. F316",
-        "stemMaterial": "ASTM A479 Type 316",
-        "seatMaterial": "PTFE",
-        "bodyPacking": "Graphite + carbon-filled PTFE",
-        "bodyHydroBar": 30,
-        "bodyHydroFluid": "water",
-        "seatLeakageBar": 6,
-        "seatLeakageFluid": "air",
-        "testStd": "ISO 5208",
-        "tempRangeC": "-20 to 180",
-        "source": "drawing 40mm-...-CL00.pdf (Rev 0)"
-      },
-      "interfaces": [
-        {
-          "standard": "ISO 5211",
-          "size": null,
-          "role": "actuator mount (top flange)"
-        },
-        {
-          "standard": "ASME B16.5 #150",
-          "size": "40 mm / DN40",
-          "role": "process connection (flanged)"
-        }
-      ],
-      "tools": [
-        "bench vice"
-      ],
-      "fasteners": [
-        {
-          "role": "stem nut (refit after lever removal)",
-          "size": null,
-          "count": 1,
-          "type": null,
-          "torqueNm": null,
-          "pattern": null,
-          "source": "same teardown as BV1121; value placeholder",
-          "confidence": "placeholder"
-        }
-      ],
-      "rules": [
-        {
-          "text": "Valve is NOT split for automation; only the lever handle and nameplate are removed.",
-          "why": "Automation only needs the stem; splitting the body risks the seat.",
-          "failureMode": "Wasted teardown; seat/seal disturbed.",
-          "source": "valve-category rule (see BV1121)"
-        },
-        {
-          "text": "Retain the nameplate; re-tie it to the finished unit for tagging.",
-          "why": "Spec traceability on the shipped assembly.",
-          "failureMode": "Unit ships untagged.",
-          "source": "valve-category rule (see BV1121)"
-        },
-        {
-          "text": "Note ball position (closed) before removing the lever.",
-          "why": "Preserves reference for fail-action orientation.",
-          "failureMode": "Actuator fitted to wrong open/close datum.",
-          "source": "valve-category rule (see BV1121)"
-        }
-      ],
-      "checks": [
-        {
-          "text": "Valve cycles freely before mounting.",
-          "acceptance": "Full open-to-close by hand, no binding."
-        },
-        {
-          "text": "Clamped square in vice, bore horizontal.",
-          "acceptance": "Flange faces to the line, valve not skewed."
-        }
-      ],
-      "hookups": [],
-      "media": [],
-      "provenance": {
-        "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity + nameplate specs confirmed from drawing; ISO 5211 flange size and all fastener/torque values placeholder. Distinct product from BV1121 (15 mm) - separate partId on purpose."
-      }
-    },
-    "actuator80": {
-      "partId": "actuator80",
-      "itemSubCode": "PA1025",
-      "displayName": "Pneumatic actuator, rack & pinion, spring return (FAIL-TO-CLOSE), RNP80",
-      "category": "actuator",
-      "status": "specced (no 3D model yet)",
-      "oem": {
-        "make": "Valmet (Neles)",
-        "model": "RNP80SR40CA1GD",
-        "datasheetRef": "drawings/40mm-BV1121-PA1019-TP0191-CL00.pdf"
-      },
-      "attributes": {
-        "type": "pneumatic rack & pinion",
-        "action": "spring return 90 deg",
-        "failSafe": "fail-to-close",
-        "airMinBar": 4,
-        "airMaxBar": 6.5,
-        "pneumaticConn": "1/4\" NPT",
-        "tempRangeC": "0 to 80",
-        "material": "aluminium, anodized (end caps)",
-        "source": "drawing 40mm-...-CL00.pdf (Rev 0)"
-      },
-      "interfaces": [
-        {
-          "standard": "ISO 5211",
-          "size": null,
-          "role": "valve mount (base)"
-        },
-        {
-          "standard": "NAMUR (VDMA 24563)",
-          "size": null,
-          "role": "SOV direct mount (side face)"
-        },
-        {
-          "standard": "VDI/VDE 3845",
-          "size": null,
-          "role": "accessory mount (top, for LSB riser)"
-        }
-      ],
-      "tools": [
-        "spanner (size to confirm)"
-      ],
-      "fasteners": [
-        {
-          "role": "base bolts (actuator to bracket)",
-          "size": null,
-          "count": 4,
-          "type": null,
-          "torqueNm": null,
-          "pattern": "cross",
-          "source": "RNP80 stack; size/torque placeholder",
-          "confidence": "placeholder"
-        }
-      ],
-      "rules": [
-        {
-          "text": "Remove the top cap / position indicator and wipe clean before fitting the switch-box riser.",
-          "why": "Exposes the NAMUR pinion drive for the LSB shaft.",
-          "failureMode": "LSB cannot engage the pinion.",
-          "source": "actuator-category rule (see PA1019)"
-        },
-        {
-          "text": "Confirm FAIL-TO-CLOSE (spring-return) orientation before final torque. NOTE: this is the OPPOSITE fail-action to Config 1 (PA1019 is fail-to-open).",
-          "why": "Wrong orientation reverses the fail-action of the whole package.",
-          "failureMode": "Valve fails to the wrong position on air loss (safety).",
-          "source": "drawing CL00 (Fail Safe Condition = Fail to Close)"
-        }
-      ],
-      "checks": [
-        {
-          "text": "Actuator square to the valve before final torque.",
-          "acceptance": "No skew; base fully seated on bracket."
-        },
-        {
-          "text": "Coupling engaged on the stem.",
-          "acceptance": "Pinion drives the stem through full travel."
-        },
-        {
-          "text": "Fail-action verified as fail-to-close on air loss.",
-          "acceptance": "Spring drives the valve CLOSED when air is removed."
-        }
-      ],
-      "hookups": [
-        {
-          "type": "air",
-          "detail": "Air supply via AFR. Operating range 4 to 6.5 barg (confirmed from drawing). Set regulator per build."
-        }
-      ],
-      "media": [],
-      "provenance": {
-        "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity + air range + fail-action confirmed from drawing; fastener/torque and ISO 5211 size placeholder. Distinct product from PA1019 (RNP50, fail-to-open) - separate partId on purpose."
-      }
     }
   },
   "relationships": [
@@ -903,13 +807,19 @@
         "coupling",
         "actuator"
       ],
-      "interfaceStandard": "actuator pinion drive",
+      "interfaceStandard": "actuator pinion drive (ISO 5211 bi-square, 14 mm A/F)",
       "rules": [
         {
           "text": "Rotate the coupling to align the tang to the pinion; never force it.",
           "why": "Forcing damages the pinion or shears the tang.",
           "failureMode": "Stripped drive; no torque transmission.",
           "source": "golden-steplist-config01.md H1"
+        },
+        {
+          "text": "Actuator drive is a 14 mm A/F ISO 5211 bi-square female socket; the coupling must present a matching 14 mm bi-square to the actuator.",
+          "why": "Correct drive size for torque transmission.",
+          "failureMode": "Loose/stripped drive.",
+          "source": "Valmet catalogue p25/p28"
         }
       ],
       "fasteners": [],
@@ -966,6 +876,12 @@
           "why": "Even seal + correct porting for clean stroke.",
           "failureMode": "Leak or cross-port; erratic actuation.",
           "source": "golden-steplist-config01.md F1"
+        },
+        {
+          "text": "Actuator NAMUR face: 2x M5 tapped holes and a 1/4\" air port; SOV bolts are M5.",
+          "why": "Confirms SOV mounting fastener size.",
+          "failureMode": "Wrong bolt size / air leak.",
+          "source": "Valmet catalogue p25"
         }
       ],
       "fasteners": [
@@ -1019,128 +935,6 @@
         }
       ],
       "source": "golden-steplist-config01.md G1"
-    },
-    {
-      "pair": [
-        "bracket",
-        "valve40"
-      ],
-      "interfaceStandard": "ISO 5211",
-      "rules": [
-        {
-          "text": "Bracket fits over the stem onto the valve stop-plate ears.",
-          "why": "Locates the bracket to the valve's mounting datum.",
-          "failureMode": "Misaligned actuator stack.",
-          "source": "same as bracket<->valve (BV1121)"
-        }
-      ],
-      "fasteners": [
-        {
-          "role": "valve-to-bracket",
-          "size": null,
-          "count": 2,
-          "type": "socket-head",
-          "torqueNm": null,
-          "confidence": "placeholder",
-          "source": "40 mm stack; torque differs from 15 mm, unconfirmed"
-        }
-      ],
-      "checks": [
-        {
-          "text": "Bracket flat, no rock; ISO 5211 pattern up.",
-          "acceptance": "Seated square, holes aligned."
-        }
-      ],
-      "source": "config02 (40 mm) - mirrors BV1121 stack; values held null"
-    },
-    {
-      "pair": [
-        "coupling",
-        "actuator80"
-      ],
-      "interfaceStandard": "actuator pinion drive",
-      "rules": [
-        {
-          "text": "Rotate the coupling to align the tang to the pinion; never force it.",
-          "why": "Forcing damages the pinion or shears the tang.",
-          "failureMode": "Stripped drive; no torque transmission.",
-          "source": "same as coupling<->actuator (PA1019)"
-        }
-      ],
-      "fasteners": [],
-      "checks": [
-        {
-          "text": "Coupling tang aligned to pinion before the actuator seats.",
-          "acceptance": "Actuator drops on without forcing; drives through full travel."
-        }
-      ],
-      "source": "config02 (40 mm)"
-    },
-    {
-      "pair": [
-        "sov",
-        "actuator80"
-      ],
-      "interfaceStandard": "NAMUR (VDMA 24563)",
-      "rules": [
-        {
-          "text": "Compress the O-rings evenly; keep the supply hole open and exhaust clear.",
-          "why": "Even seal + correct porting for clean stroke.",
-          "failureMode": "Leak or cross-port; erratic actuation.",
-          "source": "same as sov<->actuator (PA1019)"
-        }
-      ],
-      "fasteners": [
-        {
-          "role": "SOV to actuator",
-          "size": null,
-          "count": 2,
-          "type": "socket-head (long)",
-          "torqueNm": null,
-          "confidence": "placeholder",
-          "source": "NAMUR footprint shared; torque unconfirmed"
-        }
-      ],
-      "checks": [
-        {
-          "text": "O-rings compressed evenly; supply open; exhaust clear.",
-          "acceptance": "No leak at NAMUR face on air-on."
-        }
-      ],
-      "source": "config02 (40 mm)"
-    },
-    {
-      "pair": [
-        "lsb",
-        "actuator80"
-      ],
-      "interfaceStandard": "VDI/VDE 3845 + NAMUR pinion shaft",
-      "rules": [
-        {
-          "text": "Engage the LSB shaft in the pinion adapter BEFORE the mounting nuts are pulled tight.",
-          "why": "Nuts-first stops the shaft seating or bends it.",
-          "failureMode": "Broken/disengaged shaft; no feedback.",
-          "source": "same as lsb<->actuator (PA1019), flagged critical"
-        }
-      ],
-      "fasteners": [
-        {
-          "role": "riser to actuator top",
-          "size": null,
-          "count": 4,
-          "type": "studs + nuts",
-          "torqueNm": null,
-          "confidence": "placeholder",
-          "source": "config02 (40 mm)"
-        }
-      ],
-      "checks": [
-        {
-          "text": "Shaft engaged, box square, cams readable.",
-          "acceptance": "Shaft seated before final tightening."
-        }
-      ],
-      "source": "config02 (40 mm) - via lsbmount riser"
     }
   ],
   "interfaceRules": [
@@ -1198,12 +992,6 @@
   ],
   "openQuestions": [
     {
-      "id": "OQ-01",
-      "part": "valve/actuator/bracket",
-      "question": "ISO 5211 flange size (F03/F04/F05...) for the BV1121 valve top and PA1019 actuator base?",
-      "blocks": "interfaceRules[ISO 5211] fastener + pattern"
-    },
-    {
       "id": "OQ-02",
       "part": "bracket<->valve",
       "question": "Valve-to-bracket screw size and torque (2x socket-head)?",
@@ -1212,14 +1000,8 @@
     {
       "id": "OQ-03",
       "part": "actuator",
-      "question": "Actuator base bolt size and torque (4x, golden shows ~20 Nm placeholder)?",
+      "question": "Actuator valve-mount bolt TORQUE. Size CONFIRMED M6 (F05) [Arnav 2026-07-17]; torque not in the Valmet catalogue - set per M6 bolt grade (e.g. 8.8) or Rajdeep standard.",
       "blocks": "confirmed fastener + torque"
-    },
-    {
-      "id": "OQ-04",
-      "part": "actuator",
-      "question": "RNP50SR40 operating air pressure range and datasheet reference?",
-      "blocks": "hookups (air) confidence"
     },
     {
       "id": "OQ-05",
@@ -1230,7 +1012,7 @@
     {
       "id": "OQ-06",
       "part": "sov<->actuator",
-      "question": "SOV mounting bolt size and torque (2x, ~6 Nm placeholder)?",
+      "question": "SOV NAMUR mount bolt TORQUE. Size confirmed M5 (Valmet p25); torque low per NAMUR - confirm value.",
       "blocks": "confirmed fastener + torque"
     },
     {
@@ -1266,44 +1048,14 @@
     {
       "id": "OQ-13",
       "part": "coupling",
-      "question": "Valve stem flat size and pinion drive size for the coupling interface.",
+      "question": "Coupling: actuator drive confirmed = 14 mm A/F ISO 5211 bi-square (Valmet). Valve STEM square/flat size is NOT in the L&T catalogue dimension tables - get it from the valve GA drawing (drawings/15mm-...pdf) or L&T on request.",
       "blocks": "coupling interface dimensions"
     },
     {
-      "id": "OQ-14",
-      "part": "config02 identity",
-      "question": "Ratify the official Config 2 item code: drawing BODY = BV1124-PA1025-TP0026-CL00 (matches the physical 40 mm / RNP80 parts); filename + number-block = BV1121-PA1019-TP0191-CL00 (Config 1 codes, stale template). Parts stored as BV1124/PA1025 to stay distinct.",
-      "blocks": "config record + drawing filename"
-    },
-    {
       "id": "OQ-15",
-      "part": "valve40/actuator80/bracket",
-      "question": "ISO 5211 flange size (F07/F10?) for the BV1124 valve top and PA1025 actuator base.",
-      "blocks": "interfaceRules[ISO 5211] fastener + pattern for 40 mm"
-    },
-    {
-      "id": "OQ-16",
-      "part": "bracket<->valve40",
-      "question": "Valve-to-bracket screw size and torque for the 40 mm valve (differs from the 15 mm build).",
-      "blocks": "confirmed fastener + torque"
-    },
-    {
-      "id": "OQ-17",
-      "part": "actuator80",
-      "question": "RNP80SR40 base bolt size and torque (4x).",
-      "blocks": "confirmed fastener + torque"
-    },
-    {
-      "id": "OQ-18",
-      "part": "bracket/coupling (BK1001)",
-      "question": "Arnav confirmed BK1001 is correct for the 40 mm build. Confirm whether the physical 40 mm bracket/coupling geometry is identical to the 15 mm part under the same BK1001 code, or a resized variant - the 3D placeholder needs to know.",
-      "blocks": "config02 bracket/coupling geometry"
-    },
-    {
-      "id": "OQ-19",
-      "part": "valve40 / actuator80",
-      "question": "3D STEP files for L&T L1RF1C-040mm and Valmet RNP80SR40CA1GD. Using scaled placeholders until supplied.",
-      "blocks": "modeled geometry for config02 playback"
+      "part": "config-level (Config 2)",
+      "question": "Config 1 is now FAIL-CLOSE. Config 2 was defined as the fail-to-close 'opposite' of Config 1, so the contrast is broken (both fail-close); Config 2's own actuator code RNP80SR40C... is also spring-to-close (C). Decide: flip Config 2 to FAIL-OPEN (code A) to keep a two-config contrast, or accept both fail-close and drop the 'opposite' framing. Affects data/config02.json, docs/config02-ingestion.md, PROJECT-STATUS Config 2 section, and App.jsx toConfig2.",
+      "blocks": "Config 2 fail-action definition + demo contrast"
     }
   ]
 }

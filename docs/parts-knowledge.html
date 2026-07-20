@@ -1,0 +1,290 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ValveOS parts-knowledge</title>
+<style>
+:root{--bg:#0f1216;--panel:#171b21;--edge:#262c34;--ink:#e8ecf1;--dim:#9aa4b0;--blue:#4b8bff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{position:sticky;top:0;background:rgba(15,18,22,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--edge);padding:14px 22px;z-index:5}
+h1{font-size:17px;margin:0 0 3px} .muted-txt{color:var(--dim);font-size:12px}
+.wrap{max-width:1080px;margin:0 auto;padding:22px}
+#q{width:100%;max-width:380px;margin-top:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--edge);background:#10141a;color:var(--ink);font-size:14px}
+h2{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin:30px 0 12px;border-bottom:1px solid var(--edge);padding-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px 16px}
+.card.rel{background:#14181f}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pid{font-weight:700;color:var(--blue)} .sub{color:var(--dim);font-size:12px;margin-left:4px}
+.dn{font-weight:600;margin:6px 0 4px}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:12px;margin-bottom:8px}
+.meta-row .ds{color:#7fa7e6}
+.fld{margin:10px 0} .lbl{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+ul{margin:4px 0;padding-left:18px} li{margin-bottom:5px}
+.rules .why{color:var(--dim);font-size:12px} .acc{color:var(--dim)}
+.src{color:#6f7a86;font-size:11px}
+table.sub{width:100%;border-collapse:collapse;font-size:12px}
+table.sub th{text-align:left;color:var(--dim);font-weight:600;border-bottom:1px solid var(--edge);padding:3px 6px}
+table.sub td{border-bottom:1px solid #20252c;padding:4px 6px;vertical-align:top}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.badge.ok{background:#123a24;color:#5fd396} .badge.warn{background:#3d2f10;color:#e8b451}
+.badge.muted{background:#262c34;color:#9aa4b0} .badge.info{background:#152742;color:#6ea8ff}
+.prov{margin-top:10px;padding-top:8px;border-top:1px solid var(--edge);color:var(--dim);font-size:11px}
+.empty{color:var(--dim);font-size:12px}
+table.oq{width:100%;border-collapse:collapse} table.oq th{text-align:left;color:var(--dim);border-bottom:1px solid var(--edge);padding:6px 8px}
+table.oq td{border-bottom:1px solid #20252c;padding:8px;vertical-align:top} table.oq td.pid{color:var(--blue);font-weight:700;white-space:nowrap}
+</style></head><body>
+<header>
+  <h1>ValveOS &middot; parts-knowledge database</h1>
+  <div class="muted-txt">partId (matches the STEPS id in app/src/App.jsx); Rajdeep item sub-code stored as itemSubCode &nbsp;|&nbsp; resolution: part -&gt; relationship -&gt; interfaceRule -&gt; categoryDefault (most specific wins) &nbsp;|&nbsp; updated 2026-07-16</div>
+  <input id="q" placeholder="filter parts (id, sub-code, name, OEM)...">
+</header>
+<div class="wrap">
+  <h2>Parts (13)</h2>
+  <div class="grid" id="parts">
+    <section class="card" data-search="valve BV1121 Bare ball valve, 15 mm, flanged L&amp;T / L1RF1C-015 valve">
+      <div class="card-h">
+        <div><span class="pid">valve</span> <span class="sub">BV1121</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Bare ball valve, 15 mm, flanged</div>
+      <div class="meta-row"><span>valve</span><span>L&T / L1RF1C-015</span>
+        <span class="ds">drawings/15mm-BV1121-PA1019-TP0026-PN00.pdf; docs/Datasheets/L&amp;T-Process-Ball-Valves_New.pdf</span></div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>ISO 5211</b> &middot; F03 (DN15, Class 150/300) &mdash; actuator mount (integral ISO 5211 top flange, M5 threads) <span class=src>[L&amp;T Process Ball Valves catalogue p9 (single-piece regular-bore dimensions) + p5 (integral ISO 5211 flange)]</span></li><li><b>ASME B16.5 #150 (family spec, confirm for 15 mm)</b> &middot; 15 mm / DN15 &mdash; process connection (flanged); bore 11 mm (regular bore), face-to-face 108 mm (Cl150) <span class=src>[L&amp;T catalogue p9]</span></li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>bench vice</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>stem nut (refit after lever removal)</td><td></td><td>1</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>golden-steplist-config01.md A2</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Valve is NOT split for automation; only the lever handle and nameplate are removed.<div class="why">why: Automation only needs the stem; splitting the body is unnecessary and risks the seat. &middot; <span class="src">fitter decision 2026-07-13 (golden-steplist-config01.md)</span></div></li><li>Retain the nameplate; it is re-tied to the finished unit for tagging.<div class="why">why: Spec traceability on the shipped assembly. &middot; <span class="src">golden-steplist-config01.md A2/H3</span></div></li><li>Note ball position (closed) before removing the lever.<div class="why">why: Preserves reference for fail-action orientation later. &middot; <span class="src">golden-steplist-config01.md A2</span></div></li><li>Design break torque approx 5 Nm at DN15 (value WITHOUT safety factor per the catalogue note). The RNP50-SR40 actuator delivers 9-13 Nm at 4 bar, so it is adequately sized with a safety margin.<div class="why">why: Confirms the actuator can drive the valve at the AFR-set 4 bar. &middot; <span class="src">L&amp;T catalogue p7 (valve torque data) vs Valmet catalogue p5</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Valve cycles freely before mounting. <span class="acc">&rarr; Full open-to-close by hand, no binding.</span></li><li>Clamped square in vice, bore horizontal. <span class="acc">&rarr; Flange faces to the line, valve not skewed.</span></li></ul></div>
+      
+      <div class="prov">updated 2026-07-17 &middot; OEM-confirmed (L&amp;T catalogue): ISO 5211 top flange = F03, bore 11 mm RB, face-to-face 108 mm, design torque ~5 Nm. Open: stem square size (not in catalogue tables); process-flange bolt spec.</div>
+    </section>
+    <section class="card" data-search="lever  Valve lever / hand-operating handle (removed during automation) L&amp;T (supplied with the BV1121 valve) handle">
+      <div class="card-h">
+        <div><span class="pid">lever</span> <span class="sub">&mdash;</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Valve lever / hand-operating handle (removed during automation)</div>
+      <div class="meta-row"><span>handle</span><span>L&T (supplied with the BV1121 valve)</span>
+        </div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>valve stem</b> &mdash; hand operation (removed for automation)</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>ring spanner</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>lever / stem nut</td><td></td><td>1</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>golden-steplist-config01.md A2</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Removed during automation: only the lever and nameplate come off (the valve is not split). Keep the nameplate; refit the stem nut.<div class="why">why: The actuator replaces manual operation; the nameplate is reused for final tagging. &middot; <span class="src">golden-steplist-config01.md A2</span></div></li><li>Note the ball position (closed) before removing the lever.<div class="why">why: Preserves the datum for fail-action orientation. &middot; <span class="src">golden-steplist-config01.md A2</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Nameplate retained; ball position noted; stem nut refitted. <span class="acc">&rarr; Nameplate set aside; stem nut back on.</span></li></ul></div>
+      
+      <div class="prov">updated 2026-07-14 &middot; removal step confirmed; the lever .glb is a generated placeholder (swap real CAD later)</div>
+    </section>
+    <section class="card" data-search="bracket BK1001 Mounting bracket (valve-to-actuator) Rajdeep Industrial Products / BK1001 bracket">
+      <div class="card-h">
+        <div><span class="pid">bracket</span> <span class="sub">BK1001</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Mounting bracket (valve-to-actuator)</div>
+      <div class="meta-row"><span>bracket</span><span>Rajdeep Industrial Products / BK1001</span>
+        <span class="ds">Rajdeep shop drawing (custom)</span></div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>ISO 5211</b> &middot; valve top is ISO 5211 F03 (M5); Rajdeep bracket mounts to stop-plate ears (2x M6 per golden A3) &mdash; valve stop-plate mount (bracket underside)</li><li><b>ISO 5211</b> &middot; F05 (M6) &mdash; actuator base mount (bracket top) <span class=src>[Arnav 2026-07-17 (actuator bolts M6 = F05)]</span></li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>Allen key (size to confirm)</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>valve-to-bracket screws</td><td></td><td>2</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>video ground-truth + golden-steplist A3 (2 screws confirmed; size/torque placeholder)</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Bracket goes onto the VALVE first, right after the lever is removed.<div class="why">why: Establishes the mounting datum before the actuator is dressed and lowered. &middot; <span class="src">fitter decision 2026-07-13 (golden-steplist-config01.md A3)</span></div></li><li>Bracket must sit flat with no rock.<div class="why">why: A rocking bracket misaligns the actuator to the stem. &middot; <span class="src">golden-steplist-config01.md A3</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Bracket flat on the valve pad, no rock. <span class="acc">&rarr; No gap or rocking under hand pressure.</span></li><li>ISO 5211 hole pattern up and aligned. <span class="acc">&rarr; Actuator base holes line up without forcing.</span></li></ul></div>
+      
+      <div class="prov">updated 2026-07-17 &middot; custom part; actuator-side mount = F05/M6 confirmed (Arnav). Valve-side screw size/torque still open (OQ-02).</div>
+    </section>
+    <section class="card" data-search="coupling BK1001 Drive coupling / stem adapter Rajdeep Industrial Products / BK1001 (coupling) coupling">
+      <div class="card-h">
+        <div><span class="pid">coupling</span> <span class="sub">BK1001</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Drive coupling / stem adapter</div>
+      <div class="meta-row"><span>coupling</span><span>Rajdeep Industrial Products / BK1001 (coupling)</span>
+        <span class="ds">Rajdeep shop drawing (custom)</span></div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>valve stem flats</b> &mdash; valve stem engagement</li><li><b>actuator pinion (square/female drive)</b> &mdash; actuator drive engagement</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>hand (press fit)</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><div class="empty">none</div></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Coupling seats on the valve stem flats, square tang up.<div class="why">why: Correct orientation for the actuator pinion to engage. &middot; <span class="src">golden-steplist-config01.md A4</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Coupling seated on stem flats. <span class="acc">&rarr; Fully down on the flats, not perched on the stem tip.</span></li><li>Square drive tang pointing up. <span class="acc">&rarr; Tang square and clean for pinion entry.</span></li></ul></div>
+      
+      <div class="prov">updated 2026-07-14 &middot; identity confirmed; stem/pinion dimensions unknown</div>
+    </section>
+    <section class="card" data-search="actuator PA1019 Pneumatic actuator, rack &amp; pinion, spring return (fail-to-close / spring-to-close) Valmet (Neles) / RNP50SR40 actuator">
+      <div class="card-h">
+        <div><span class="pid">actuator</span> <span class="sub">PA1019</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Pneumatic actuator, rack &amp; pinion, spring return (fail-to-close / spring-to-close)</div>
+      <div class="meta-row"><span>actuator</span><span>Valmet (Neles) / RNP50SR40</span>
+        <span class="ds">docs/Datasheets/Valmet Actuator Catalogue.pdf (IMO-218EN, Issue 5/2022)</span></div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>ISO 5211</b> &middot; F03 and F05 (dual drilling) &mdash; valve mount (base). Offers dual F03/F05; Rajdeep uses F05 (M6) to the bracket [Arnav 2026-07-17] <span class=src>[Valmet catalogue p25 (dimensions, RNP50)]</span></li><li><b>ISO 5211 bi-square drive</b> &middot; 14 mm A/F &mdash; pinion female drive (to coupling) <span class=src>[Valmet catalogue p25 (N A/F=14) + p28 (shaft-key type D)]</span></li><li><b>NAMUR (VDMA 24563)</b> &middot; 2x M5; 1/4&quot; air port &mdash; SOV direct mount <span class=src>[Valmet catalogue p25 (M5x8 deep; port T=1/4&quot;)]</span></li><li><b>VDI/VDE 3845</b> &mdash; accessory mount (top, for limit switch box)</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>spanner (size per fastener), Allen key (end-cap bolts #9 = M6)</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>valve-mount bolts (ISO 5211 base to bracket)</td><td>M6 (ISO 5211 F05)</td><td>4</td><td>&mdash;</td><td><span class="badge warn">size confirmed; torque placeholder</span></td><td class='src'>size confirmed M6/F05 by Arnav 2026-07-17; torque not in Valmet catalogue (set per bolt grade / Rajdeep standard)</td></tr><tr><td>actuator end-cap / body bolts (part #9, service)</td><td>M6</td><td></td><td>8 Nm</td><td><span class="badge ok">confirmed (internal service torque; NOT the valve-mount torque)</span></td><td class='src'>Valmet catalogue p16 tightening-torque table (RNP40-80 = M6, 8 Nm)</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Remove the top cap / position indicator and wipe clean before fitting the limit switch box.<div class="why">why: Exposes the ISO 5211 pinion drive for the LSB shaft. &middot; <span class="src">golden-steplist-config01.md B1</span></div></li><li>SR40 = 4.0 barg spring version (matches AFR set 4 bar). Action code C = spring-to-CLOSE, so the package is FAIL-CLOSE: the valve closes on loss of air. Confirmed by Arnav 2026-07-16. Air supply must meet the spring rating and must not exceed 8 barg (max supply); design pressure 10 barg.<div class="why">why: The spring is sized for 4.0 bar; under-supply will not complete the stroke, over-supply beyond 8 bar risks the pressure-retaining parts. &middot; <span class="src">Valmet catalogue p4 (pressures) + p28 (order code C) + Arnav 2026-07-16</span></div></li><li>Confirm FAIL-TO-CLOSE (spring-to-close) orientation before final torque: the valve must go CLOSED on air loss.<div class="why">why: Wrong orientation reverses the fail-action of the whole package. &middot; <span class="src">golden-steplist-config01.md H1/H2; fail-action per Arnav 2026-07-16</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Actuator square to the valve before final torque. <span class="acc">&rarr; No skew; base fully seated on bracket.</span></li><li>Coupling engaged on the stem. <span class="acc">&rarr; Pinion drives the stem through full travel.</span></li></ul></div>
+      <div class="fld"><div class="lbl">hookups</div><ul><li><b>air</b>: Operating media air/nitrogen. SR40 spring rated 4.0 barg (matches AFR set 4 bar). Max supply 8 barg, design 10 barg. Output torque RNP50-SR40 at 4 bar = 9-13 Nm (min-max over stroke). IP66/67, -20..+80 C (temp code G). Source: Valmet catalogue p4, p5.</li></ul></div>
+      <div class="prov">updated 2026-07-16 &middot; OEM-confirmed (Valmet catalogue): pressures, spring rating, ISO 5211 flanges F03/F05, 14 mm bi-square drive, NAMUR M5. Fail-action = FAIL-CLOSE (spring-to-close, code C) confirmed by Arnav 2026-07-16. Open: valve-mount torque; F-code resolved: actuator uses F05/M6 to bracket, valve is F03 (Arnav 2026-07-17).</div>
+    </section>
+    <section class="card" data-search="sov SV1007 Solenoid valve (SOV), NAMUR, 3/2 (function per order) Rotex / 30318-5-2G+I-24VDC-37 sov">
+      <div class="card-h">
+        <div><span class="pid">sov</span> <span class="sub">SV1007</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Solenoid valve (SOV), NAMUR, 3/2 (function per order)</div>
+      <div class="meta-row"><span>sov</span><span>Rotex / 30318-5-2G+I-24VDC-37</span>
+        <span class="ds">drawings/30318-5-2G+24VDC 230VAC 110AC-16.pdf</span></div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>NAMUR (VDMA 24563)</b> &mdash; actuator mount</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>ball-end Allen key (size to confirm)</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>SOV-to-actuator bolts</td><td></td><td>2</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>golden-steplist F1 (2 bolts; size/torque placeholder)</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Select 3/2 or 5/2 per customer and set the O-ring gate to the required port before mounting.<div class="why">why: The same SOV body serves multiple functions; the gate sets the airflow path. &middot; <span class="src">golden-steplist-config01.md D1</span></div></li><li>Fit the rubber NAMUR plate with 2 O-rings; peel the protective film first.<div class="why">why: Seals the NAMUR interface; film left on prevents a seal. &middot; <span class="src">golden-steplist-config01.md D2</span></div></li><li>Blank all air holes except the middle (supply); fit the silencer/exhaust so it points clear.<div class="why">why: Only the supply port should be open; exhaust must vent freely. &middot; <span class="src">golden-steplist-config01.md F1</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Gate matches the ordered function (3/2 vs 5/2). <span class="acc">&rarr; Confirmed against the work order.</span></li><li>O-rings seated and compressed evenly; supply hole open; exhaust clear. <span class="acc">&rarr; No visible gap; supply port open, exhaust unobstructed.</span></li></ul></div>
+      <div class="fld"><div class="lbl">hookups</div><ul><li><b>electrical</b>: 24 VDC coil, flameproof; 1/2&quot; NPT cable entry (per BV1123 BOM family spec, confirm for SV1007).</li><li><b>air</b>: NAMUR-ported to the actuator; supply fed from the AFR via the air train.</li></ul></div>
+      <div class="prov">updated 2026-07-14 &middot; identity confirmed; electrical entry and fastener/torque to confirm</div>
+    </section>
+    <section class="card" data-search="afr FR1001 Air filter regulator (FRL), 1/4&quot; BSP, with dial gauge Shavo / SB10-2GM2T/RGK-NB afr">
+      <div class="card-h">
+        <div><span class="pid">afr</span> <span class="sub">FR1001</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Air filter regulator (FRL), 1/4&quot; BSP, with dial gauge</div>
+      <div class="meta-row"><span>afr</span><span>Shavo / SB10-2GM2T/RGK-NB</span>
+        </div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>custom L-plate mount (afr-plate)</b> &mdash; mounting to actuator side</li><li><b>1/4&quot; BSP</b> &middot; 1/4&quot; &mdash; pneumatic ports (in/out)</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>open-end spanner (size to confirm)</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>AFR body to L-plate</td><td></td><td>2</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>golden-steplist C2 (2 fasteners; placeholder)</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Bowl / drain points down; mounting slots vertical for height adjustment.<div class="why">why: Bowl drains correctly; vertical slots let the AFR height line up with the air train. &middot; <span class="src">golden-steplist-config01.md C2</span></div></li><li>Thread the dial gauge into the gauge port with PTFE on the thread; gauge readable from the front.<div class="why">why: Sealed, readable pressure indication. &middot; <span class="src">golden-steplist-config01.md C1</span></div></li><li>Set regulator to 4 bar for this build.<div class="why">why: Config 1 set pressure. &middot; <span class="src">fitter decision 2026-07-13 (golden-steplist-config01.md H3)</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Bowl down, gauge readable, set pressure 4 bar. <span class="acc">&rarr; Gauge reads 4 bar with supply on.</span></li></ul></div>
+      <div class="fld"><div class="lbl">hookups</div><ul><li><b>air</b>: 1/4&quot; BSP inlet via push-in supply fitting (PTFE-taped); outlet to SOV via bent pipe. Regulation range per SB10 datasheet to confirm; set 4 bar.</li></ul></div>
+      <div class="prov">updated 2026-07-14 &middot; identity confirmed; pressure range and fasteners to confirm</div>
+    </section>
+    <section class="card" data-search="lsb LB1002 Limit switch box (2x SPDT) with integral mounting bracket Valmet / KS2V1A2NGRNN+BKT limit-switch-box">
+      <div class="card-h">
+        <div><span class="pid">lsb</span> <span class="sub">LB1002</span></div>
+        <span class="badge ok">modeled</span>
+      </div>
+      <div class="dn">Limit switch box (2x SPDT) with integral mounting bracket</div>
+      <div class="meta-row"><span>limit-switch-box</span><span>Valmet / KS2V1A2NGRNN+BKT</span>
+        </div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>VDI/VDE 3845</b> &mdash; mounts directly to actuator top via its integral bracket</li><li><b>NAMUR pinion shaft</b> &mdash; shaft to pinion adapter</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>spanner (size to confirm), screwdriver (cam set)</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>integral bracket feet to actuator top</td><td></td><td>4</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>shop photo 2026-07-14 + golden-steplist B2 (count/size placeholder)</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>The LSB ships with its mounting bracket integral (the &#x27;+BKT&#x27; in KS2V1A2NGRNN+BKT). There is NO separate riser bracket; the box and bracket mount as ONE unit directly onto the actuator top.<div class="why">why: The bracket is welded/bolted to the box base and the drive shaft protrudes through it, ready to drop onto the actuator. &middot; <span class="src">shop photo IMG_5045 2026-07-14 (Arnav)</span></div></li><li>Engage the LSB shaft in the pinion adapter BEFORE the nuts are pulled tight.<div class="why">why: Pulling nuts first prevents the shaft from seating, or shears/bends it. &middot; <span class="src">golden-steplist-config01.md B2 (flagged critical)</span></div></li><li>Set cams to OPEN / CLOSED (round-2 test step, knowledge lives with the part).<div class="why">why: Cams define the switch trip points. &middot; <span class="src">golden-steplist-config01.md (deferred test)</span></div></li></ul></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Cams set OPEN / CLOSED. <span class="acc">&rarr; Switches trip at true end positions; dome indicator reads correctly.</span></li><li>Integral bracket seated square on the actuator top (VDI/VDE 3845). <span class="acc">&rarr; Both bracket feet flat, shaft engaged in pinion before final tightening.</span></li></ul></div>
+      <div class="fld"><div class="lbl">hookups</div><ul><li><b>electrical</b>: 2x SPDT micro-switches (Honeywell V15S05 per BOM family spec); position feedback contacts. Confirm for LB1002.</li></ul></div>
+      <div class="prov">updated 2026-07-14 &middot; identity confirmed; integral bracket confirmed from shop photo 2026-07-14; switch model and fastener sizes/torque to confirm</div>
+    </section>
+    <section class="card" data-search="gauge  Dial pressure gauge (AFR) &amp;mdash; instrument">
+      <div class="card-h">
+        <div><span class="pid">gauge</span> <span class="sub">&mdash;</span></div>
+        <span class="badge muted">planned</span>
+      </div>
+      <div class="dn">Dial pressure gauge (AFR)</div>
+      <div class="meta-row"><span>instrument</span><span>&mdash;</span>
+        </div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>gauge port thread (AFR)</b> &mdash; threads into AFR gauge port</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>&mdash;</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><div class="empty">none</div></div>
+      
+      
+      
+      <div class="prov">updated 2026-07-14 &middot; planned asset; not yet modeled or specced</div>
+    </section>
+    <section class="card" data-search="afr-plate  AFR mounting L-plate Rajdeep Industrial Products bracket">
+      <div class="card-h">
+        <div><span class="pid">afr-plate</span> <span class="sub">&mdash;</span></div>
+        <span class="badge muted">planned</span>
+      </div>
+      <div class="dn">AFR mounting L-plate</div>
+      <div class="meta-row"><span>bracket</span><span>Rajdeep Industrial Products</span>
+        </div>
+      
+      <div class="fld"><div class="lbl">tools</div><div>&mdash;</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><div class="empty">none</div></div>
+      
+      
+      
+      <div class="prov">updated 2026-07-14 &middot; planned asset; not yet modeled or specced</div>
+    </section>
+    <section class="card" data-search="air-pipe TB1001 (family) Bent air pipe (AFR to SOV) SS304 1/4&quot; tube + fittings tubing">
+      <div class="card-h">
+        <div><span class="pid">air-pipe</span> <span class="sub">TB1001 (family)</span></div>
+        <span class="badge muted">planned</span>
+      </div>
+      <div class="dn">Bent air pipe (AFR to SOV)</div>
+      <div class="meta-row"><span>tubing</span><span>SS304 1/4" tube + fittings</span>
+        </div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>1/4&quot; tube fittings</b> &middot; 1/4&quot; &mdash; AFR out to SOV supply</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>&mdash;</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><div class="empty">none</div></div>
+      
+      
+      
+      <div class="prov">updated 2026-07-14 &middot; planned asset; geometry tied to AFR height</div>
+    </section>
+    <section class="card" data-search="namur-plate  Rubber NAMUR adapter plate (SOV) with O-rings &amp;mdash; seal">
+      <div class="card-h">
+        <div><span class="pid">namur-plate</span> <span class="sub">&mdash;</span></div>
+        <span class="badge muted">planned</span>
+      </div>
+      <div class="dn">Rubber NAMUR adapter plate (SOV) with O-rings</div>
+      <div class="meta-row"><span>seal</span><span>&mdash;</span>
+        </div>
+      <div class="fld"><div class="lbl">interfaces</div><ul><li><b>NAMUR (VDMA 24563)</b> &mdash; SOV to actuator seal</li></ul></div>
+      <div class="fld"><div class="lbl">tools</div><div>&mdash;</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><div class="empty">none</div></div>
+      
+      
+      
+      <div class="prov">updated 2026-07-14 &middot; planned asset; may fold into sov.glb</div>
+    </section>
+    <section class="card" data-search="boltnutset  Reusable bolt + nut set (per bolted joint) &amp;mdash; fastener">
+      <div class="card-h">
+        <div><span class="pid">boltnutset</span> <span class="sub">&mdash;</span></div>
+        <span class="badge muted">planned</span>
+      </div>
+      <div class="dn">Reusable bolt + nut set (per bolted joint)</div>
+      <div class="meta-row"><span>fastener</span><span>&mdash;</span>
+        </div>
+      
+      <div class="fld"><div class="lbl">tools</div><div>&mdash;</div></div>
+      <div class="fld"><div class="lbl">fasteners</div><div class="empty">none</div></div>
+      
+      
+      
+      <div class="prov">updated 2026-07-14 &middot; planned reusable asset; carries torque callout per joint</div>
+    </section></div>
+  <h2>Relationships (5)</h2>
+  <div class="grid"><section class="card rel">
+      <div class="card-h"><span class="pid">bracket &harr; valve</span><span class="badge info">ISO 5211</span></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Bracket fits over the stem onto the valve stop-plate ears. <span class='src'>[golden-steplist-config01.md A3]</span></li></ul></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>valve-to-bracket</td><td></td><td>2</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>golden-steplist A3</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Bracket flat, no rock; ISO 5211 pattern up. <span class='acc'>&rarr; Seated square, holes aligned.</span></li></ul></div>
+    </section><section class="card rel">
+      <div class="card-h"><span class="pid">coupling &harr; actuator</span><span class="badge info">actuator pinion drive (ISO 5211 bi-square, 14 mm A/F)</span></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Rotate the coupling to align the tang to the pinion; never force it. <span class='src'>[golden-steplist-config01.md H1]</span></li><li>Actuator drive is a 14 mm A/F ISO 5211 bi-square female socket; the coupling must present a matching 14 mm bi-square to the actuator. <span class='src'>[Valmet catalogue p25/p28]</span></li></ul></div>
+      
+      <div class="fld"><div class="lbl">checks</div><ul><li>Coupling tang aligned to pinion before the actuator seats. <span class='acc'>&rarr; Actuator drops on without forcing; drives through full travel.</span></li></ul></div>
+    </section><section class="card rel">
+      <div class="card-h"><span class="pid">lsb &harr; actuator</span><span class="badge info">VDI/VDE 3845 + NAMUR pinion shaft</span></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Engage the LSB shaft in the pinion adapter BEFORE the mounting nuts are pulled tight. <span class='src'>[golden-steplist-config01.md B2 (critical)]</span></li></ul></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>LSB integral bracket feet to actuator top</td><td></td><td>4</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>shop photo 2026-07-14 + golden-steplist B2</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Shaft engaged, integral bracket square, cams readable. <span class='acc'>&rarr; Shaft seated before final tightening.</span></li></ul></div>
+    </section><section class="card rel">
+      <div class="card-h"><span class="pid">sov &harr; actuator</span><span class="badge info">NAMUR (VDMA 24563)</span></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>Compress the O-rings evenly; keep the supply hole open and exhaust clear. <span class='src'>[golden-steplist-config01.md F1]</span></li><li>Actuator NAMUR face: 2x M5 tapped holes and a 1/4&quot; air port; SOV bolts are M5. <span class='src'>[Valmet catalogue p25]</span></li></ul></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>SOV to actuator</td><td></td><td>2</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>golden-steplist F1</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>O-rings compressed evenly; supply open; exhaust clear. <span class='acc'>&rarr; No leak at NAMUR face on air-on.</span></li></ul></div>
+    </section><section class="card rel">
+      <div class="card-h"><span class="pid">afr &harr; sov</span><span class="badge info">air train (1/4&quot; tube)</span></div>
+      <div class="fld"><div class="lbl">rules</div><ul class="rules"><li>AFR &#x27;in&#x27; open (supply), elbow on &#x27;out&#x27;; bent metal pipe runs from AFR to the SOV middle (supply) hole. <span class='src'>[golden-steplist-config01.md G1]</span></li></ul></div>
+      <div class="fld"><div class="lbl">fasteners</div><table class="sub"><thead><tr><th>role</th><th>size</th><th>count</th><th>torque</th><th>confidence</th><th>source</th></tr></thead><tbody><tr><td>tube nuts both ends</td><td>1/4&quot;</td><td>2</td><td>&mdash;</td><td><span class="badge warn">placeholder</span></td><td class='src'>golden-steplist G1</td></tr></tbody></table></div>
+      <div class="fld"><div class="lbl">checks</div><ul><li>Pipe geometry matches AFR height; nuts not cross-threaded. <span class='acc'>&rarr; Leak-free run; AFR height lines up with the tube.</span></li></ul></div>
+    </section></div>
+  <h2>Interface rules &middot; Category defaults</h2>
+  <div class="card"><div class="fld"><div class="lbl">interface rules</div><ul><li><b>ISO 5211</b> &mdash; valve-to-actuator / valve-to-bracket mounting flange <span class='src'>[standard (flange size + bolt pattern to be tabulated per F0x code)]</span></li><li><b>NAMUR (VDMA 24563)</b> &mdash; SOV direct-mount to actuator <span class='src'>[standard (footprint fixed; fasteners to confirm)]</span></li><li><b>VDI/VDE 3845</b> &mdash; accessory (LSB / positioner) mount on actuator top <span class='src'>[standard (mounting pattern fixed; fasteners to confirm)]</span></li></ul></div>
+  <div class="fld"><div class="lbl">category defaults</div><ul><li><b>actuator-spring-return</b>: Remove the position indicator / top cap before fitting top-mounted accessories.; Confirm fail-action (fail-open vs fail-close) orientation before final torque.</li><li><b>sov</b>: Peel protective film and seat O-rings before mounting; blank unused ports.</li></ul></div></div>
+  <h2>Open questions (11)</h2>
+  <table class="oq"><thead><tr><th>ID</th><th>part</th><th>question</th></tr></thead><tbody><tr><td class='pid'>OQ-02</td><td>bracket&lt;-&gt;valve</td><td>Valve-to-bracket screw size and torque (2x socket-head)?</td></tr><tr><td class='pid'>OQ-03</td><td>actuator</td><td>Actuator valve-mount bolt TORQUE. Size CONFIRMED M6 (F05) [Arnav 2026-07-17]; torque not in the Valmet catalogue - set per M6 bolt grade (e.g. 8.8) or Rajdeep standard.</td></tr><tr><td class='pid'>OQ-05</td><td>lsb&lt;-&gt;actuator</td><td>Riser stud size and nut torque (4x M5 placeholder)?</td></tr><tr><td class='pid'>OQ-06</td><td>sov&lt;-&gt;actuator</td><td>SOV NAMUR mount bolt TORQUE. Size confirmed M5 (Valmet p25); torque low per NAMUR - confirm value.</td></tr><tr><td class='pid'>OQ-07</td><td>afr</td><td>AFR-to-L-plate and L-plate-to-actuator fastener sizes/torques (M5/M6 placeholders)?</td></tr><tr><td class='pid'>OQ-09</td><td>lsb</td><td>Confirm limit switch model (Honeywell V15S05?) and LB1002 datasheet.</td></tr><tr><td class='pid'>OQ-10</td><td>sov</td><td>Confirm SV1007 electrical entry (1/2&quot; NPT) and the ordered function (3/2 vs 5/2) for this build.</td></tr><tr><td class='pid'>OQ-11</td><td>afr</td><td>SB10 regulation range and gauge model/spec.</td></tr><tr><td class='pid'>OQ-12</td><td>all tools</td><td>Actual tool sizes (Allen key mm, spanner mm) used on the real build; golden list values are placeholders.</td></tr><tr><td class='pid'>OQ-13</td><td>coupling</td><td>Coupling: actuator drive confirmed = 14 mm A/F ISO 5211 bi-square (Valmet). Valve STEM square/flat size is NOT in the L&amp;T catalogue dimension tables - get it from the valve GA drawing (drawings/15mm-...pdf) or L&amp;T on request.</td></tr><tr><td class='pid'>OQ-15</td><td>config-level (Config 2)</td><td>Config 1 is now FAIL-CLOSE. Config 2 was defined as the fail-to-close &#x27;opposite&#x27; of Config 1, so the contrast is broken (both fail-close); Config 2&#x27;s own actuator code RNP80SR40C... is also spring-to-close (C). Decide: flip Config 2 to FAIL-OPEN (code A) to keep a two-config contrast, or accept both fail-close and drop the &#x27;opposite&#x27; framing. Affects data/config02.json, docs/config02-ingestion.md, PROJECT-STATUS Config 2 section, and App.jsx toConfig2.</td></tr></tbody></table>
+  <p class="muted-txt" style="margin-top:24px">Generated 2026-07-17 from data/parts-knowledge.json &middot; regenerate: <code>python3 scripts/build_parts_views.py</code></p>
+</div>
+<script>
+const q=document.getElementById('q'),cards=[...document.querySelectorAll('#parts .card')];
+q.addEventListener('input',()=>{const t=q.value.toLowerCase();cards.forEach(c=>{c.style.display=c.dataset.search.toLowerCase().includes(t)?'':'none';});});
+</script>
+</body></html>

@@ -1,6 +1,6 @@
 # Golden step list — Config BV1121-PA1019-TP0026-PN00
 
-**15 mm ball valve automation package. Fail-to-open, spring return.**
+**15 mm ball valve automation package. Fail-to-close, spring return.**
 L&T L1RF1C-015mm valve · Valmet RNP50SR40 actuator · Rotex 30318 NAMUR SOV (24 VDC) ·
 Valmet KS2V limit switch box · Shavo SB10 AFR · BK1001 bracket + coupling.
 
@@ -12,11 +12,11 @@ Legend: **3D** = step adds a part in the app animation · **Info** = instruction
 
 | # | Type | Operation | Part / hardware added | Tool | Torque | Checks | Notes |
 |---|------|-----------|----------------------|------|--------|--------|-------|
-| 0 | Info | Kitting & verify | All parts per item code | — | — | Item code matches GA drawing; all parts present; correct valve size & actuator model | Confirm fail action = fail-to-open before starting |
+| 0 | Info | Kitting & verify | All parts per item code | — | — | Item code matches GA drawing; all parts present; correct valve size & actuator model | Confirm fail action = fail-to-close before starting |
 | 1 | 3D | Mount & prep bare valve | Valve BV1121 | Bench vice | — | Valve clamped square; stem clean; ports oriented to line | Set valve to a known position for coupling |
 | 2 | 3D | Fit mounting bracket | Bracket BK1001 + **4× bolts** | Allen key **[confirm mm]** | **[confirm]** Nm | Bracket seated flat on valve ISO 5211 pad; holes aligned; no rock | ISO 5211 interface |
 | 3 | 3D | Fit drive coupling | Coupling + **grub screw** | Allen key **[confirm mm]** | **[confirm]** Nm | Coupling square on stem; flats/keyway engaged; grub screw tight | Links valve stem to actuator pinion |
-| 4 | 3D | Mount actuator | Actuator PA1019 + **4× bolts** | Spanner **[confirm mm]** | **[confirm]** Nm | Actuator oriented for fail-to-open (spring return); coupling engaged in pinion; body square to bracket | Air ports accessible |
+| 4 | 3D | Mount actuator | Actuator PA1019 + **4× bolts** | Spanner **[confirm mm]** | **[confirm]** Nm | Actuator oriented for fail-to-close (spring return); coupling engaged in pinion; body square to bracket | Air ports accessible |
 | 5 | Info | Set stroke / end stops | — | Screwdriver / Allen | — | Full 90° open and close; mechanical stops set; confirms fail position on air loss | VAC-standard stroke setting |
 | 6 | 3D | Fit solenoid valve (SOV) | SOV SV1007 + **2× NAMUR screws + gasket** | Allen key **[confirm mm]** | **[confirm]** Nm | NAMUR gasket seated; ports 1-supply / 2-4 to actuator correct; ½" NPT cable entry clear | 3/2 NAMUR, 24 VDC |
 | 7 | 3D | Fit air filter regulator | AFR FR1001 + mounting + **¼" tube** | Spanner **[confirm mm]** | — | Bowl drain points down; gauge readable; set 4–6 bar; tube run neat | ¼" BSP, 0.7–7 bar |

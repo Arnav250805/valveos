@@ -57,7 +57,7 @@ Wizard-of-Oz is acceptable: hard-coded templates for demo configs are fine; inve
 ## 8. Configuration #1: BOM & sourcing
 
 > CORRECTION (2026-07-14): the ACTIVE build target for Config 1 is now
-> **BV1121-PA1019-TP0026-PN00** — the 15 mm L&T ball valve package (fail-to-open, spring
+> **BV1121-PA1019-TP0026-PN00** — the 15 mm L&T ball valve package (fail-to-close, spring
 > return). Actuator is the Valmet **RNP50SR40**. Its BOM: 15 mm L&T L1RF1C valve (BV1121) ·
 > Valmet RNP50SR40 actuator (PA1019) · Rotex 30318 NAMUR SOV 24 VDC (SV1007) · Valmet KS2V
 > limit switch box (LB1002) · Shavo SB10 AFR (FR1001) · BK1001 bracket + coupling. The app
@@ -66,7 +66,7 @@ Wizard-of-Oz is acceptable: hard-coded templates for demo configs are fine; inve
 > and 3D-source status) and as the model for how a config BOM is documented. Do not treat the
 > 25 mm as the active build.
 
-25mm ball valve automation package, fail-to-open, spring return. GA dims: A=127, B=110, C=25, D=17, E=339, F=196, G=154 mm (use for FreeCAD placement).
+25mm ball valve automation package, fail-to-close, spring return. GA dims: A=127, B=110, C=25, D=17, E=339, F=196, G=154 mm (use for FreeCAD placement).
 
 | # | Part | Model / spec | 3D source | Status |
 |---|------|--------------|-----------|--------|
@@ -103,7 +103,7 @@ Days 4-45 arc: operator tablet view → configurator dropdowns mapped to item su
 
 ## 11. Parts-knowledge database (standing rule)
 
-There is ONE canonical parts-knowledge database: `ValveOS/data/parts-knowledge.json` (machine source of truth), mirrored for review at `ValveOS/docs/parts-knowledge.md`. It stores engineering knowledge keyed to the PART (`partId` = the app's `STEPS` id in `app/src/App.jsx`; Rajdeep item sub-code stored as `itemSubCode`), never to a step or a single manual. Configs are thin recipes of partIds plus which interfaces mate; they pull tool/torque/check content from this database at render time.
+There is ONE canonical parts-knowledge database: `ValveOS/data/parts-knowledge.json` (machine source of truth), mirrored for review at `ValveOS/data/parts-knowledge.html` (browser viewer). It stores engineering knowledge keyed to the PART (`partId` = the app's `STEPS` id in `app/src/App.jsx`; Rajdeep item sub-code stored as `itemSubCode`), never to a step or a single manual. Configs are thin recipes of partIds plus which interfaces mate; they pull tool/torque/check content from this database at render time.
 
 - Any chat that analyzes a new drawing, datasheet, config, or part must capture the reusable part-level facts (interfaces, tools, fasteners, checks, hookups, confirmed specs with their source) into this database. Do not leave that knowledge trapped in a chat or a config's step list. Reuse existing part records; never duplicate a part that already exists.
 - Populate per part and per interface, not per assembly. Knowledge resolves most-specific-first: part, then relationship (a specific part pair), then interfaceRule (interface standard + size: ISO 5211 / NAMUR / VDI-VDE 3845), then categoryDefault. Most of the ~250 assemblies reuse a small set of parts and a dozen standardized interfaces, so knowledge entered once auto-applies across configs. That reuse is the flywheel and the demo money-shot.
@@ -112,7 +112,7 @@ There is ONE canonical parts-knowledge database: `ValveOS/data/parts-knowledge.j
 
 Make sure to begin each chat with "Arnav" - so i make sure that the context memory per chat is sufficient enough and so i am safe from you hallucinating
 
-PROGRESS UPDATE (2026-07-10): The build-target config is now BV1121-PA1019-TP0026-PN00 (15 mm L&T ball valve package, fail-to-open), not the 25 mm BV1123 in Section 8. A working MVP app is built: Vite + React + three.js at ValveOS/app inside the project folder, playing an 8-step animated assembly (parts as .glb in app/public, positions baked in the STEPS array in app/src/App.jsx). Generic STEP parts converted via cascadio; custom bracket/coupling/switch-box-mount generated with trimesh; leva sliders removed; git committed. Read ValveOS/docs/PROJECT-STATUS.md at the start of any new chat in this project. Current phase: finalizing the real assembly flow (docs/assembly-flow-config01.md), then wiring real step content + Info/test steps + fasteners into the app.
+PROGRESS UPDATE (2026-07-10): The build-target config is now BV1121-PA1019-TP0026-PN00 (15 mm L&T ball valve package, fail-to-close), not the 25 mm BV1123 in Section 8. A working MVP app is built: Vite + React + three.js at ValveOS/app inside the project folder, playing an 8-step animated assembly (parts as .glb in app/public, positions baked in the STEPS array in app/src/App.jsx). Generic STEP parts converted via cascadio; custom bracket/coupling/switch-box-mount generated with trimesh; leva sliders removed; git committed. Read ValveOS/docs/PROJECT-STATUS.md at the start of any new chat in this project. Current phase: finalizing the real assembly flow (docs/assembly-flow-config01.md), then wiring real step content + Info/test steps + fasteners into the app.
 
 PROGRESS UPDATE (2026-07-14): Parts-knowledge database created and populated for Config 1 (see Section 11). `ValveOS/data/parts-knowledge.json` + `ValveOS/docs/parts-knowledge.md`: 8 parts, 5 relationships, interfaceRules + categoryDefaults seeded, 13 open questions (fastener sizes, torques, ISO 5211 flange size, a few model/datasheet confirmations) awaiting fitter/OEM input.
 

@@ -2,7 +2,7 @@
 
 Model-based work-instruction platform for valve automation assembly.
 Customer zero: Rajdeep Industrial Products Pvt Ltd, Pune.
-First build target: **15mm BV1121-PA1019-TP0026-PN00** (spring-return, fail-to-open).
+First build target: **15mm BV1121-PA1019-TP0026-PN00** (spring-return, fail-to-close).
 
 ## Folder structure
 

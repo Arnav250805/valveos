@@ -2,7 +2,7 @@
 
 **Source:** shop-floor video, 7 min 34 s, 4K 60 fps, filmed at the bench vice. Analysed silent (no audio).
 **Extraction:** coarse pass at 1 frame / 4 s (full timeline), dense zoomed passes on every joint/label/gauge, then 2 s fine-grain passes on the fiddly stretches.
-**Config:** BV1121-PA1019-TP0026-PN00, 15 mm L&T ball valve package, fail-to-open, spring return.
+**Config:** BV1121-PA1019-TP0026-PN00, 15 mm L&T ball valve package, fail-to-close, spring return.
 
 ## Identified parts & markings (read off the video)
 

@@ -125,22 +125,32 @@ const CONFIGS = {
 
 const D2R = Math.PI / 180;
 
-function Part({ url, color, position, rotation, scale, insert, revealed, recenter }) {
+function Part({ url, color, position, rotation, scale, insert, revealed, future, recenter }) {
   const { scene } = useGLTF(url);
   const ref = useRef();
   const t = useRef(0); // 0 = flown out / hidden, 1 = fully placed
 
-  const model = useMemo(() => {
+  const { model, solidMat, ghostMat } = useMemo(() => {
+    const solidMat = new THREE.MeshStandardMaterial({
+      color: color || "#8b949e",
+      metalness: 0.35,
+      roughness: 0.4,
+    });
+    // faint transparent "context" look for parts not yet installed
+    const ghostMat = new THREE.MeshStandardMaterial({
+      color: color || "#8b949e",
+      metalness: 0.1,
+      roughness: 0.8,
+      transparent: true,
+      opacity: 0.16,
+      depthWrite: false,
+    });
     const clone = scene.clone(true);
     clone.traverse((o) => {
       if (o.isMesh) {
         o.castShadow = true;
         o.receiveShadow = true;
-        o.material = new THREE.MeshStandardMaterial({
-          color: color || "#8b949e",
-          metalness: 0.35,
-          roughness: 0.4,
-        });
+        o.material = solidMat;
       }
     });
     if (recenter !== false) {
@@ -150,21 +160,37 @@ function Part({ url, color, position, rotation, scale, insert, revealed, recente
     }
     const g = new THREE.Group();
     g.add(clone);
-    return g;
+    return { model: g, solidMat, ghostMat };
   }, [scene, color, recenter]);
 
+  // Future parts = faint ghost (no shadow); installed/active = solid (cast shadow).
+  useEffect(() => {
+    const mat = future ? ghostMat : solidMat;
+    model.traverse((o) => {
+      if (o.isMesh) {
+        o.material = mat;
+        o.castShadow = !future;
+      }
+    });
+  }, [future, ghostMat, solidMat, model]);
+
   useFrame((_, dt) => {
+    if (!ref.current) return;
+    if (future) {
+      // draw at the final assembled position, always visible as context
+      ref.current.visible = true;
+      ref.current.position.set(position[0], position[1], position[2]);
+      return;
+    }
     const target = revealed ? 1 : 0;
     t.current = THREE.MathUtils.damp(t.current, target, 6, dt);
-    if (ref.current) {
-      ref.current.visible = t.current > 0.002;
-      const k = 1 - t.current; // how far along the insertion offset it still is
-      ref.current.position.set(
-        position[0] + insert[0] * k,
-        position[1] + insert[1] * k,
-        position[2] + insert[2] * k
-      );
-    }
+    ref.current.visible = t.current > 0.002;
+    const k = 1 - t.current; // how far along the insertion offset it still is
+    ref.current.position.set(
+      position[0] + insert[0] * k,
+      position[1] + insert[1] * k,
+      position[2] + insert[2] * k
+    );
   });
 
   return (
@@ -192,7 +218,7 @@ function Scene({ items, step, target }) {
         {items.map((it) => (
           <Part key={it.id} url={it.url} color={it.color} recenter={it.recenter}
             position={it.position} rotation={it.rotation} scale={it.scale} insert={it.insert || [0, 0, 0]}
-            revealed={meshActive(it, step)} />
+            revealed={meshActive(it, step)} future={step < it.showFrom} />
         ))}
       </Suspense>
       <Suspense fallback={null}><Environment preset="warehouse" /></Suspense>

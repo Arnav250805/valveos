@@ -3,6 +3,8 @@ import {
   OrbitControls,
   Environment,
   ContactShadows,
+  GizmoHelper,
+  GizmoViewcube,
   TransformControls,
   useGLTF,
 } from "@react-three/drei";
@@ -37,7 +39,7 @@ const MESHES = [
   { id: "cap", url: "/cap.glb", color: COL.cap, position: [0.0, 0.255, 0.0], rotation: [0.0, 90.0, 0.0], scale: 0.8, insert: [0.0, 0.12, 0.0], showFrom: 5, hideFrom: 6 },
   { id: "lsb", url: "/lsb.glb", color: COL.lsb, position: [-0.0, 0.33, 0.05], rotation: [-90.0, 0.0, -1.0], scale: 0.85, insert: [0.0, 0.22, 0.0], showFrom: 6,
     extras: [{ url: "/lsbmount.glb", color: COL.lsbmount, position: [0.0, 0.258, 0.0], rotation: [0.0, 90.0, 0.0], scale: 1.0, insert: [0.0, 0.22, 0.0] }] },
-  { id: "afr", url: "/afr.glb", color: COL.afr, position: [0.05, 0.21, -0.04], rotation: [-180.0, 0.0, 180.0], scale: 0.49, insert: [0.28, 0.0, 0.0], showFrom: 7 },
+  { id: "afr", url: "/afr_real.glb", color: COL.afr, position: [0.05, 0.21, -0.04], rotation: [0.0, 0.0, 0.0], scale: 1.0, insert: [0.28, 0.0, 0.0], showFrom: 7 }, // real Shavo AFR STEP (true-scale); seat via layout editor
   { id: "gauge", url: "/gauge.glb", color: COL.gauge, position: [0.075, 0.255, 0.01], rotation: [90.0, 0.0, 0.0], scale: 0.7, insert: [0.0, 0.1, 0.0], showFrom: 8 },
   { id: "lplate", url: "/lplate.glb", color: COL.lplate, position: [0.045, 0.2, -0.02], rotation: [0.0, 90.0, 0.0], scale: 0.7, insert: [0.12, 0.0, 0.0], showFrom: 7 },
   { id: "namurplate", url: "/namurplate.glb", color: COL.namurplate, position: [0.0, 0.23, -0.02], rotation: [90.0, 90.0, 0.0], scale: 0.6, insert: [0.0, 0.0, -0.15], showFrom: 9 },
@@ -196,6 +198,9 @@ function Scene({ items, step, target }) {
       <Suspense fallback={null}><Environment preset="warehouse" /></Suspense>
       <ContactShadows position={[0, 0, 0]} opacity={0.5} scale={0.9} blur={2.5} far={0.6} />
       <OrbitControls makeDefault target={target} />
+      <GizmoHelper alignment="top-right" margin={[80, 110]}>
+        <GizmoViewcube color="#eef1f5" textColor="#20242b" strokeColor="#9aa3ad" hoverColor="#2f6fed" />
+      </GizmoHelper>
     </>
   );
 }
@@ -312,6 +317,9 @@ function EditScene({ items, target, selected, setSelected, mode, setPos, setRot,
       <Suspense fallback={null}><Environment preset="warehouse" /></Suspense>
       <ContactShadows position={[0, 0, 0]} opacity={0.4} scale={0.9} blur={2.5} far={0.6} />
       <OrbitControls makeDefault enabled={!dragging} target={target} />
+      <GizmoHelper alignment="top-right" margin={[80, 110]}>
+        <GizmoViewcube color="#eef1f5" textColor="#20242b" strokeColor="#9aa3ad" hoverColor="#2f6fed" />
+      </GizmoHelper>
     </>
   );
 }

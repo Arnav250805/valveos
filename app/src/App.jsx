@@ -60,8 +60,9 @@ const MESHES02 = [
   { id: "lsb", url: "/lsb.glb", color: COL.lsb, position: [-0.0, 0.33, 0.05], rotation: [-90.0, 0.0, -1.0], scale: 0.85, insert: [0.0, 0.22, 0.0], showFrom: 3 },
   { id: "afr", url: "/afr_real.glb", color: COL.afr, position: [0.05, 0.21, -0.04], rotation: [0.0, 0.0, 0.0], scale: 1.0, insert: [0.28, 0.0, 0.0], showFrom: 4 },
   { id: "gauge", url: "/gauge.glb", color: COL.gauge, position: [0.075, 0.255, 0.01], rotation: [90.0, 0.0, 0.0], scale: 0.7, insert: [0.0, 0.1, 0.0], showFrom: 5 },
-  { id: "namurplate", url: "/namurplate.glb", color: COL.namurplate, position: [0.0, 0.23, -0.02], rotation: [90.0, 90.0, 0.0], scale: 0.6, insert: [0.0, 0.0, -0.15], showFrom: 6 },
-  { id: "sov", url: "/sov_30318_2GI.glb", color: COL.sov, position: [0.0, 0.23, -0.05], rotation: [180.0, -90.0, 0.0], scale: 0.46, insert: [0.0, 0.0, -0.22], showFrom: 7 },
+  // Two-area bench prep: SOV + NAMUR plate assemble beside the actuator (S6), fly on as one at S7.
+  { id: "sov", url: "/sov_30318_2GI.glb", color: COL.sov, position: [0.0, 0.23, -0.05], rotation: [180.0, -90.0, 0.0], scale: 0.46, insert: [0.0, 0.0, -0.22], showFrom: 6, prep: { position: [0.3, 0.23, -0.18], untilStep: 7 } },
+  { id: "namurplate", url: "/namurplate.glb", color: COL.namurplate, position: [0.0, 0.23, -0.02], rotation: [90.0, 90.0, 0.0], scale: 0.6, insert: [0.0, 0.0, -0.15], showFrom: 6, prep: { position: [0.3, 0.23, -0.15], untilStep: 7 } },
   { id: "airpipe", url: "/airpipe.glb", color: COL.airpipe, position: [0.03, 0.2, -0.03], rotation: [0.0, 0.0, 0.0], scale: 0.55, insert: [0.0, 0.1, 0.0], showFrom: 9 },
 ];
 
@@ -154,10 +155,11 @@ const CONFIGS = {
 
 const D2R = Math.PI / 180;
 
-function Part({ url, color, position, rotation, scale, insert, revealed, future, recenter }) {
+function Part({ url, color, position, rotation, scale, insert, revealed, future, recenter, prep, step }) {
   const { scene } = useGLTF(url);
   const ref = useRef();
   const t = useRef(0); // 0 = flown out / hidden, 1 = fully placed
+  const base = useRef(null); // animated base position (prep area -> final)
 
   const { model, solidMat, ghostMat } = useMemo(() => {
     const solidMat = new THREE.MeshStandardMaterial({
@@ -215,10 +217,17 @@ function Part({ url, color, position, rotation, scale, insert, revealed, future,
     t.current = THREE.MathUtils.damp(t.current, target, 6, dt);
     ref.current.visible = t.current > 0.002;
     const k = 1 - t.current; // how far along the insertion offset it still is
+    // base position: bench prep area until prep.untilStep, then final assembled position
+    const inPrep = prep && step < prep.untilStep;
+    const bp = inPrep ? prep.position : position;
+    if (!base.current) base.current = new THREE.Vector3(bp[0], bp[1], bp[2]);
+    base.current.x = THREE.MathUtils.damp(base.current.x, bp[0], 4, dt);
+    base.current.y = THREE.MathUtils.damp(base.current.y, bp[1], 4, dt);
+    base.current.z = THREE.MathUtils.damp(base.current.z, bp[2], 4, dt);
     ref.current.position.set(
-      position[0] + insert[0] * k,
-      position[1] + insert[1] * k,
-      position[2] + insert[2] * k
+      base.current.x + insert[0] * k,
+      base.current.y + insert[1] * k,
+      base.current.z + insert[2] * k
     );
   });
 
@@ -247,7 +256,7 @@ function Scene({ items, step, target }) {
         {items.map((it) => (
           <Part key={it.id} url={it.url} color={it.color} recenter={it.recenter}
             position={it.position} rotation={it.rotation} scale={it.scale} insert={it.insert || [0, 0, 0]}
-            revealed={meshActive(it, step)} future={step < it.showFrom} />
+            revealed={meshActive(it, step)} future={step < it.showFrom} prep={it.prep} step={step} />
         ))}
       </Suspense>
       <Suspense fallback={null}><Environment preset="warehouse" /></Suspense>
@@ -283,7 +292,7 @@ function buildItems(meshes, ov, addl) {
   const items = [];
   meshes.forEach((m) => {
     const t = ov[m.id] || {};
-    items.push({ id: m.id, url: m.url, color: m.color, recenter: m.recenter, insert: m.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, removable: false, position: t.position || m.position, rotation: t.rotation || m.rotation, scale: t.scale ?? m.scale });
+    items.push({ id: m.id, url: m.url, color: m.color, recenter: m.recenter, insert: m.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, prep: m.prep, removable: false, position: t.position || m.position, rotation: t.rotation || m.rotation, scale: t.scale ?? m.scale });
     (m.extras || []).forEach((e, j) => {
       const id = m.id + "__x" + j; const et = ov[id] || {};
       items.push({ id, url: e.url, color: e.color, recenter: e.recenter, insert: e.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, removable: false, position: et.position || e.position, rotation: et.rotation || e.rotation, scale: et.scale ?? e.scale });

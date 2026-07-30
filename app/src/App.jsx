@@ -48,6 +48,35 @@ const MESHES = [
   { id: "boltset", url: "/boltset.glb", color: COL.boltset, position: [0.03, 0.135, 0.0], rotation: [0.0, 90.0, 0.0], scale: 0.8, insert: [0.0, 0.08, 0.0], showFrom: 15 },
 ];
 
+
+// -------- CONFIG 2 · PHASE 1 (Atul Ji golden list, steps 1-8; step 2 split) --------
+// Subassembly-first: NO valve/bracket/coupling on screen. Same baked positions as
+// Config 1 for now (RNP80-specific geometry later; positions are fluid).
+const MESHES02 = [
+  { id: "actuator", url: "/actuator.glb", color: COL.actuator, position: [0.0, 0.17, 0.0], rotation: [0.0, 90.0, 0.0], scale: 0.55, insert: [0.0, 0.3, 0.0], showFrom: 1 },
+  { id: "cap", url: "/cap.glb", color: COL.cap, position: [0.0, 0.255, 0.0], rotation: [0.0, 90.0, 0.0], scale: 0.8, insert: [0.0, 0.12, 0.0], showFrom: 1, hideFrom: 2 },
+  { id: "lsbmount", url: "/lsbmount.glb", color: COL.lsbmount, position: [0.0, 0.258, 0.0], rotation: [0.0, 90.0, 0.0], scale: 1.0, insert: [0.0, 0.22, 0.0], showFrom: 2 },
+  { id: "lplate", url: "/lplate.glb", color: COL.lplate, position: [0.045, 0.2, -0.02], rotation: [0.0, 90.0, 0.0], scale: 0.7, insert: [0.12, 0.0, 0.0], showFrom: 2 },
+  { id: "lsb", url: "/lsb.glb", color: COL.lsb, position: [-0.0, 0.33, 0.05], rotation: [-90.0, 0.0, -1.0], scale: 0.85, insert: [0.0, 0.22, 0.0], showFrom: 3 },
+  { id: "afr", url: "/afr_real.glb", color: COL.afr, position: [0.05, 0.21, -0.04], rotation: [0.0, 0.0, 0.0], scale: 1.0, insert: [0.28, 0.0, 0.0], showFrom: 4 },
+  { id: "gauge", url: "/gauge.glb", color: COL.gauge, position: [0.075, 0.255, 0.01], rotation: [90.0, 0.0, 0.0], scale: 0.7, insert: [0.0, 0.1, 0.0], showFrom: 5 },
+  { id: "namurplate", url: "/namurplate.glb", color: COL.namurplate, position: [0.0, 0.23, -0.02], rotation: [90.0, 90.0, 0.0], scale: 0.6, insert: [0.0, 0.0, -0.15], showFrom: 6 },
+  { id: "sov", url: "/sov_30318_2GI.glb", color: COL.sov, position: [0.0, 0.23, -0.05], rotation: [180.0, -90.0, 0.0], scale: 0.46, insert: [0.0, 0.0, -0.22], showFrom: 7 },
+  { id: "airpipe", url: "/airpipe.glb", color: COL.airpipe, position: [0.03, 0.2, -0.03], rotation: [0.0, 0.0, 0.0], scale: 0.55, insert: [0.0, 0.1, 0.0], showFrom: 9 },
+];
+
+const STEPS02 = [
+  { code: "S1", type: "3D remove", title: "Take the actuator; remove the top indication cap",            tool: "Screwdriver",       torque: "—", checks: ["NAMUR pinion drive exposed"] },
+  { code: "S2", type: "3D",        title: "Fit LSB bracket onto actuator top; sandwich the AFR L-plate", tool: "Spanner",           torque: "—", checks: ["L-plate held by the SAME bolts as the LSB bracket", "Bracket square on actuator top"] },
+  { code: "S3", type: "3D",        title: "Fit the limit switch box onto its bracket",                   tool: "Hand + spanner",    torque: "—", checks: ["Shaft engaged in pinion before nuts pulled", "Note gland side — wiring exits here"] },
+  { code: "S4", type: "3D",        title: "Bolt the AFR onto the L-plate",                               tool: "Spanner",           torque: "—", checks: ["2x M5 bolts, nuts behind the AFR", "Bowl points down"] },
+  { code: "S5", type: "3D",        title: "Thread the air dial into the AFR",                            tool: "Hand",              torque: "—", checks: ["Gauge readable from the front"] },
+  { code: "S6", type: "3D",        title: "Fit rubber NAMUR plate + 4 O-rings to the SOV back",          tool: "Hand",              torque: "—", checks: ["All 4 O-rings seated (leak prevention)", "Rubber plate is for 3-coil SOVs — our standard item"] },
+  { code: "S7", type: "Combine",   title: "Bolt the SOV assembly to the actuator NAMUR face",            tool: "Spanner",           torque: "—", checks: ["2x M6 hex bolts", "SOV gland on the SAME side as the LSB gland"] },
+  { code: "S8", type: "Info",      title: "Fit elbow (AFR) + connector (SOV) for the air pipe",          tool: "Elbow + connector", torque: "—", checks: ["Fittings on the INSIDE faces of AFR and SOV", "This orientation is always right"] },
+  { code: "S9", type: "3D",        title: "Bend + fit the SS tube from AFR elbow to SOV connector",      tool: "SS tube",           torque: "—", checks: ["Tube shaped to run elbow → connector", "Subassembly complete — do not touch the valve until now"] },
+];
+
 // -------- GOLDEN STEP LIST (Config 1) --------
 // Every step from docs/golden-steplist-config01.md. All fastener sizes / torque = placeholder.
 const GOLDEN_STEPS = [
@@ -116,10 +145,10 @@ const CONFIGS = {
   config02: {
     code: "BV1124-PA1025-TP0026-CL00",
     label: "Config 2 · 40 mm · fail-to-close",
-    target: [0, 0.18, 0],
-    camera: [0.34, 0.28, 0.55],
-    meshes: MESHES,
-    steps: toConfig2(GOLDEN_STEPS),
+    target: [0, 0.22, 0],
+    camera: [0.34, 0.32, 0.55],
+    meshes: MESHES02,
+    steps: STEPS02,
   },
 };
 
@@ -560,3 +589,4 @@ MESHES.forEach((m) => {
   useGLTF.preload(m.url);
   (m.extras || []).forEach((e) => useGLTF.preload(e.url));
 });
+MESHES02.forEach((m) => useGLTF.preload(m.url));

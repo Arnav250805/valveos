@@ -163,15 +163,15 @@ const MESHES03 = [
 const STEPS03 = [
   { code: "C1",  type: "Info",      title: "Kit and verify all parts against the item code",                        tool: "—",               torque: "—",               checks: ["Every sub-code matches BV1207-PA1001-CB0007-SP00", "Actuator confirmed CLOSED before mounting"] },
   { code: "C2",  type: "3D",        title: "Seat the Rotex 5/2 SOV on the actuator NAMUR pad",                      tool: "Hand",                 torque: "—",               checks: ["NAMUR gasket + O-rings seated", "Ports 2 and 4 aligned to the actuator"] },
-  { code: "C3",  type: "3D",        title: "Fasten the SOV to the NAMUR face",                                      tool: "Ball-end Allen key",   torque: "~4 Nm (placeholder)",  checks: ["2x M5 screws", "No gap at the gasket"] },
+  { code: "C3",  type: "3D",        title: "Fasten the SOV to the NAMUR face",                                      tool: "Ball-end Allen key",   torque: "~4 Nm",  checks: ["2x M5 screws", "No gap at the gasket"] },
   { code: "C4",  type: "3D",        title: "Seat the limit switch box (integral bracket) on the actuator top",      tool: "Hand + spanner",       torque: "—",               checks: ["Shaft engaged in pinion BEFORE nuts pulled", "Bracket square on actuator top"] },
-  { code: "C5",  type: "3D",        title: "Fasten the limit switch box",                                           tool: "Spanner",              torque: "~5 Nm (placeholder)",  checks: ["4x M5 screws", "Box square, coupling engaged"] },
+  { code: "C5",  type: "3D",        title: "Fasten the limit switch box",                                           tool: "Spanner",              torque: "~5 Nm",  checks: ["4x M5 screws", "Box square, coupling engaged"] },
   { code: "C6",  type: "3D remove", title: "Remove the valve hand lever",                                           tool: "Ring spanner",         torque: "—",               checks: ["Back off stem nut, lift lever clear", "Stem flats clean; valve CLOSED"] },
   { code: "C7",  type: "3D",        title: "Fit the drive coupling onto the valve stem",                            tool: "Hand",                 torque: "—",               checks: ["Coupling seated on stem flats", "Square tang up"] },
   { code: "C8",  type: "3D",        title: "Seat the mounting bracket on the ISO 5211 pad",                         tool: "Hand",                 torque: "—",               checks: ["Bracket flat, no rock", "4 bolt holes aligned"] },
-  { code: "C9",  type: "3D",        title: "Bolt the bracket to the valve",                                         tool: "Allen key + spanner",  torque: "~10 Nm (placeholder)", checks: ["4x M6 hex bolts", "Bracket square to the valve"] },
+  { code: "C9",  type: "3D",        title: "Bolt the bracket to the valve",                                         tool: "Allen key + spanner",  torque: "~10 Nm", checks: ["4x M6 hex bolts", "Bracket square to the valve"] },
   { code: "C10", type: "Combine",   title: "Lower the dressed actuator (SOV + LSB) onto the bracket; engage pinion", tool: "Hand",                 torque: "—",               checks: ["Coupling tang aligned to pinion (never force)", "FAIL-IN-PLACE (double-acting) orientation correct"] },
-  { code: "C11", type: "3D",        title: "Final bolt-up: actuator base to bracket",                               tool: "Allen key + spanner",  torque: "~10 Nm (placeholder)", checks: ["4x M6 bolts, cross-tighten", "Actuator square before final torque"] },
+  { code: "C11", type: "3D",        title: "Final bolt-up: actuator base to bracket",                               tool: "Allen key + spanner",  torque: "~10 Nm", checks: ["4x M6 bolts, cross-tighten", "Actuator square before final torque"] },
   { code: "C12", type: "Info",      title: "Pneumatic hookup (double-acting, 5/2)",                                 tool: "Spanner",              torque: "—",               checks: ["Supply to SOV port 1", "Port 2 to chamber A, port 4 to chamber B", "1/4-in NPT, 6.5 bar max"] },
   { code: "T1",  type: "Test",      title: "Stroke and set travel stops (0-90 deg)",                                tool: "—",               torque: "—",               checks: ["Ball reaches FULL open and FULL closed"] },
   { code: "T4",  type: "Test",      title: "Body and seat test (ISO 5208)",                                         tool: "—",               torque: "—",               checks: ["Body hydro 198 bar (water)", "Seat leakage 7 bar (air)"] },
@@ -703,7 +703,7 @@ export default function App() {
   function resetAll() { setOvAll((prev) => ({ ...prev, [configKey]: {} })); setAddlAll((prev) => ({ ...prev, [configKey]: [] })); setHiddenAll((prev) => ({ ...prev, [configKey]: [] })); setSelected(null); }
 
   return (
-    <div style={{ width: "100vw", height: "100vh", background: "#20242b", position: "relative" }}>
+    <div style={{ width: "100vw", height: "100vh", backgroundColor: "#e8eaef", backgroundImage: "linear-gradient(#d6dae2 1px, transparent 1px), linear-gradient(90deg, #d6dae2 1px, transparent 1px), linear-gradient(#c2c8d4 1px, transparent 1px), linear-gradient(90deg, #c2c8d4 1px, transparent 1px)", backgroundSize: "40px 40px, 40px 40px, 200px 200px, 200px 200px", position: "relative" }}>
       <Canvas key={configKey} shadows camera={{ position: config.camera, fov: 45 }} onPointerMissed={() => { if (edit) { setSelected(null); setMulti([]); } }}>
         {edit
           ? <EditScene items={items} target={config.target} selected={selected} setSelected={setSelected} mode={mode} setPos={setPos} setRot={setRot} setScale={setScale} apiRef={camApiRef} onSelect={selectPart} multi={multi} />

@@ -144,7 +144,7 @@ const BENCH3 = [0.0, 0.14, 0.0];
 const p3 = (f) => [f[0] + BENCH3[0], f[1] + BENCH3[1], f[2] + BENCH3[2]];
 const MESHES03 = [
   { id: "valve", url: "/valve_c3.glb", color: COL.valve, recenter: false, position: [0.0, 0.0, 0.0], rotation: [0.0, 0.0, 0.0], scale: 1.0, insert: [0.0, 0.0, 0.0], showFrom: 6 },
-  { id: "lever", url: "/lever_c3.glb", color: COL.lever, recenter: false, position: [0.0, 0.0, 0.0], rotation: [0.0, 0.0, 0.0], scale: 1.0, insert: [0.0, 0.22, 0.0], showFrom: 6, hideFrom: 7 },
+  { id: "lever", url: "/lever_c3.glb", color: COL.lever, recenter: false, position: [0.0, 0.0, 0.0], rotation: [0.0, 0.0, 0.0], scale: 1.0, insert: [0.0, 0.22, 0.0], appearInPlace: true, showFrom: 6, hideFrom: 7 },
   { id: "coupling", url: "/coupling.glb", color: COL.coupling, position: [0.0, 0.075, 0.0], rotation: [0.0, 90.0, 0.0], scale: 0.4, insert: [0.0, 0.12, 0.0], showFrom: 7 },
   { id: "bracket", url: "/bracket.glb", color: COL.bracket, position: [0.0, 0.075, 0.012], rotation: [90.0, 0.0, -180.0], scale: 0.55, insert: [0.0, 0.18, 0.0], showFrom: 8 },
   { id: "actuator", url: "/actuator.glb", color: COL.actuator, position: [0.0, 0.15, 0.0], rotation: [0.0, 90.0, 0.0], scale: 0.5, insert: [0.0, 0.3, 0.0], showFrom: 2 },
@@ -212,7 +212,7 @@ if (typeof window !== "undefined") {
   window.addEventListener("keyup", (e) => { if (e.key === "Shift") SHIFT = false; });
 }
 
-function Part({ url, color, position, rotation, scale, insert, revealed, future, recenter, prep, step, hero }) {
+function Part({ url, color, position, rotation, scale, insert, revealed, future, recenter, prep, step, hero, appearInPlace }) {
   const { scene } = useGLTF(url);
   const ref = useRef();
   const t = useRef(0); // 0 = flown out / hidden, 1 = fully placed
@@ -273,6 +273,7 @@ function Part({ url, color, position, rotation, scale, insert, revealed, future,
       // draw at the final assembled position, always visible as context
       ref.current.visible = true;
       ref.current.position.set(position[0], position[1], position[2]);
+      if (appearInPlace) t.current = 1;
       return;
     }
     const target = revealed ? 1 : 0;
@@ -321,7 +322,7 @@ function Scene({ items, step, target, intro }) {
           <Part key={it.id} url={it.url} color={it.color} recenter={it.recenter}
             position={it.position} rotation={it.rotation} scale={it.scale} insert={it.insert || [0, 0, 0]}
             hero={heroThis}
-            revealed={intro ? !it.hideFrom : meshActive(it, step)} future={intro ? false : step < it.showFrom} prep={it.prep} step={step} />
+            revealed={intro ? !it.hideFrom : meshActive(it, step)} future={intro ? false : step < it.showFrom} prep={it.prep} step={step} appearInPlace={it.appearInPlace} />
           );
         })}
       </Suspense>
@@ -373,7 +374,7 @@ function buildItems(meshes, ov, addl, hidden) {
   meshes.forEach((m) => {
     if (H.includes(m.id)) return;
     const t = ov[m.id] || {};
-    items.push({ id: m.id, url: m.url, color: m.color, recenter: m.recenter, insert: m.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, prep: m.prep, removable: false, position: t.position || m.position, rotation: t.rotation || m.rotation, scale: t.scale ?? m.scale });
+    items.push({ id: m.id, url: m.url, color: m.color, recenter: m.recenter, insert: m.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, prep: m.prep, appearInPlace: m.appearInPlace, removable: false, position: t.position || m.position, rotation: t.rotation || m.rotation, scale: t.scale ?? m.scale });
     (m.extras || []).forEach((e, j) => {
       const id = m.id + "__x" + j; if (H.includes(id)) return; const et = ov[id] || {};
       items.push({ id, url: e.url, color: e.color, recenter: e.recenter, insert: e.insert, showFrom: m.showFrom, hideFrom: m.hideFrom, removable: false, position: et.position || e.position, rotation: et.rotation || e.rotation, scale: et.scale ?? e.scale });

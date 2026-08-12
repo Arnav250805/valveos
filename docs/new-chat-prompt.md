@@ -1,5 +1,11 @@
 # Master prompt for the new "assembly flow" chat
 
+> UPDATE 2026-08-12: This prompt is STALE (it describes the old 8-step BV1121 app). Current
+> reality: the app has three configs and the FILMED build target is **Config 3
+> (25MM-BV1207-PA1001-CB0007-SP00)**, deployed at https://valveos-mvp.vercel.app/. Always read
+> `ValveOS/docs/PROJECT-STATUS.md` first (top section dated 2026-08-12) for the true current state.
+
+
 Paste everything below into the new chat.
 
 ---

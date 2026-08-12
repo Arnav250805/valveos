@@ -1,6 +1,63 @@
 # ValveOS — project status & handoff (read this first)
 
-_Last updated: 2026-07-21. Single source of truth for any new chat._
+_Last updated: 2026-08-12. Single source of truth for any new chat._
+
+## 2026-08-12 - CONFIG 3 IS THE FILMED BUILD TARGET (read this first)
+
+**Shoot config = Config 3 = `25MM-BV1207-PA1001-CB0007-SP00`.** NOT Config 1, NOT Config 2.
+The floor shoot is filmed on Config 3. Earlier notes that named Config 2 as the shoot target are
+SUPERSEDED. Config 3 is live on the master link (https://valveos-mvp.vercel.app/), loads via the
+"Config 3" button, and its layout is baked into the repo so the deployed site matches localhost.
+
+**Config 3 BOM (from GAD `Config 3 25MM-BV1207-PA1001-CB0007-SP00.pdf`):**
+25 mm L&T L3RSWC socket-weld 3-piece ball valve (BV1207, Class 800, socket-weld ends) ·
+Valmet RNP040DN00DA1GD actuator (PA1001, DOUBLE-ACTING, fail-in-place / stayput) ·
+Rotex 51424-6-2G+I/III 5/2 NAMUR SOV 24 VDC (SV1001) · Valmet KC2V1A3NGRNN limit switch box
+(LB1001, 2x SPDT Honeywell V15S05) · MS bracket + coupling (CB0007). No AFR in this package.
+Special point SP00 = fail-in-place. Testing (ISO 5208): body hydro 198 bar water, seat 7 bar air.
+
+**Config 3 in the app (`app/src/App.jsx`): new `config03` in CONFIGS; `MESHES03` + `STEPS03` (15 steps).**
+Flow: build the actuator sub-assembly (seat + fasten SOV, seat + fasten LSB), remove the valve hand
+lever, mate onto the valve (coupling, bracket + bolts, lower dressed actuator + bolts), then tests.
+- Real geometry: `valve_c3.glb` (converted from the L&T socket-weld STEP `h510sstsw25mm.stp`; the hand
+  lever was fused INTO the body solid, so it was split off GEOMETRICALLY by a horizontal cut at the
+  neck into `lever_c3.glb`). SOV `sov_51424_2GI.glb` is the real Rotex 51424 STEP. Actuator, bracket,
+  coupling, lsb reuse the existing real `.glb` assets. Fastener clusters `bolts4.glb` / `bolts2.glb`
+  drive into their holes at the fastening steps (2xM5 SOV, 4xM5 LSB, 4xM6 bracket, 4xM6 actuator).
+- NAMUR plate and LSB coupling (`lsbmount`) are HIDDEN for Config 3 (not used on this package).
+- Arnav's locked layout is baked in `DEFAULT_TF.config03` and `DEFAULT_HIDDEN.config03`. GAD image is
+  `app/public/gad_c3.png`.
+- Torque values shown for Config 3 are still FIRST-GUESS (the word "placeholder" was removed from the
+  on-screen text for the shoot, but they are NOT OEM-confirmed). Parts-knowledge DB for Config 3
+  (PA1001 double-acting actuator, 51424 SOV, BV1207 socket-weld valve, KC2V LSB) is NOT yet populated -
+  do that in the parts-knowledge chat with torques null/placeholder until confirmed (SAFETY rule stands).
+
+**Other app changes made 2026-08-12 (all in `app/src/App.jsx` unless noted, all deployed):**
+- View cube moved to bottom-left (view + edit modes).
+- Edit tools expanded: multi-select (Shift-click builds a glowing group) with group MOVE (drag any
+  member) and group ROTATE about the group centroid (numeric buttons); precise per-axis rotate
+  (-90/-15/+15/+90 + typed value) and scale box; "Snap view" buttons (Front/Back/Left/Right/Top/Iso);
+  "Reset this part" (clears one part's override back to the code default); Delete now HIDES base parts
+  per-config with a "Restore hidden parts" button; blue glow marks selected/grouped parts.
+- GAD viewer: a "GAD" toggle button (Config 3 only) opens the drawing with zoom (+/-, scroll wheel)
+  and drag-to-pan.
+- Step 1 shows the full assembly SOLID (finished-unit preview, lever hidden); ghost-and-build resumes
+  from step 2. The Config-3 lever fades ghost->solid IN PLACE on step 6 (`appearInPlace` flag on the
+  mesh) and slides out on step 7.
+- Removed two test steps (Calibrate limit switches, Function test); Config 3 is 15 steps.
+- Removed the word "placeholder" from all on-screen torque values.
+- Switcher buttons show the full item codes now (15mm-BV1121-PA1019-TP0026-PN00,
+  40MM-BV1121-PA1019-TP0191-CL00, 25MM-BV1207-PA1001-CB0007-SP00). Config 2's displayed code was set
+  to 40MM-BV1121-PA1019-TP0191-CL00.
+- Background changed from dark #20242b to a soft off-white infinite grid (#e8eaef, pure CSS on the
+  root div; the 3D canvas is transparent so nothing else changed).
+- iPad/tablet: `index.html` has full-screen web-app meta (apple-/mobile-web-app-capable), viewport
+  locked against page zoom/bounce, touch CSS (no text-select/callout); title is now "ValveOS". For the
+  shoot, "Add to Home Screen" on the iPad and launch from the icon for a full-screen kiosk view.
+
+**Deploy routine unchanged:** from `ValveOS/app` -> `git add -A && git commit && git push` -> `vercel --prod`
+(master link https://valveos-mvp.vercel.app/). GitHub: github.com/Arnav250805/valveos.
+
 
 ## 2026-07-20 — Positioning, ICP & solution framing (business brainstorm)
 

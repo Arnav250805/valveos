@@ -7,35 +7,62 @@
     "safetyRule": "Never fabricate a torque, fastener size, or spec. Unconfirmed values are null with confidence 'placeholder' or 'unknown' and listed in openQuestions.",
     "canonicalHome": "This file is edited only from the parts-knowledge command chat.",
     "schemaVersion": "1.0",
-    "lastUpdated": "2026-07-16",
+    "lastUpdated": "2026-07-21",
     "populatedConfigs": [
       "BV1121-PA1019-TP0026-PN00 (Config 1, 15 mm L&T ball valve package, fail-to-close)"
-    ]
+    ],
+    "authoritativeSources": {
+      "componentList": "docs/Datasheets/VAC Standard Component List .xlsx - RIPPL code / model / make are the ONLY absolutely-true columns; all else grain-of-salt.",
+      "stepFiles": "POLICY (Arnav 2026-07-21): the official OEM STEP files in 'Dirac x VAC/Component STEP files/' are the ONLY source of truth for component geometry, configs, and 3D. The generic TraceParts/GrabCAD stand-ins used for Config 1 & 2 are DEPRECATED - they must be fully replaced by official STEP-derived .glb as each manufacturer's STEP arrives. No generic stand-ins remain in the final product."
+    },
+    "geometryStatus": {
+      "policy": "official OEM STEP -> FreeCAD/cascadio -> .glb; swap into app per component as STEPs arrive.",
+      "haveOfficialStep": [
+        "afr (FR1001, Shavo SB10 - converted to afr_real.glb, live in app; seat via editor)",
+        "mor (MR1002, Q-Tork QTM-250)",
+        "positioner (PR1001, Rotex RTX1000R)"
+      ],
+      "pendingOfficialStep_config1_2": [
+        "valve BV1121/BV1124 (L&T)",
+        "actuator PA1019/PA1025 (Valmet)",
+        "sov (Rotex)",
+        "lsb (Valmet)"
+      ],
+      "custom_needRajdeepStepOrRemodel": [
+        "bracket/coupling BK1001"
+      ],
+      "note": "App currently runs on generic stand-ins (acceptable for the Wizard-of-Oz demo); real-geometry swap is a quality upgrade, per-component, as official STEPs come in."
+    },
+    "catalogIngested": {
+      "source": "docs/Datasheets/VAC Standard Component List .xlsx",
+      "date": "2026-07-21",
+      "note": "Every stocked RIPPL code seeded as a catalog skeleton (code/model/make only). status='catalog' until a config uses it, then it graduates to 'active' and gets datasheet-enriched."
+    }
   },
   "parts": {
     "valve": {
       "partId": "valve",
       "itemSubCode": "BV1121",
-      "displayName": "Bare ball valve, 15 mm, flanged",
+      "displayName": "Bare ball valve, 15 mm, flanged, FULL bore",
       "category": "valve",
       "status": "modeled",
       "oem": {
         "make": "L&T",
-        "model": "L1RF1C-015",
-        "datasheetRef": "drawings/15mm-BV1121-PA1019-TP0026-PN00.pdf; docs/Datasheets/L&T-Process-Ball-Valves_New.pdf"
+        "model": "L1FF1C-015mm",
+        "datasheetRef": "drawings/15mm-BV1121-PA1019-TP0026-PN00.pdf; docs/Datasheets/L&T-Process-Ball-Valves_New.pdf; VAC Standard Component List (RIPPL code / model / make = authoritative)"
       },
       "interfaces": [
         {
           "standard": "ISO 5211",
           "size": "F03 (DN15, Class 150/300)",
           "role": "actuator mount (integral ISO 5211 top flange, M5 threads)",
-          "source": "L&T Process Ball Valves catalogue p9 (single-piece regular-bore dimensions) + p5 (integral ISO 5211 flange)"
+          "source": "L&T catalogue p9 (read from REGULAR-BORE table) + p5. NOTE: BV1121 is FULL bore per component list; F03 expected to hold at DN15, re-confirm against the full-bore spec."
         },
         {
           "standard": "ASME B16.5 #150 (family spec, confirm for 15 mm)",
           "size": "15 mm / DN15",
-          "role": "process connection (flanged); bore 11 mm (regular bore), face-to-face 108 mm (Cl150)",
-          "source": "L&T catalogue p9"
+          "role": "process connection: flanged ASME B16.5 #150, FULL bore (per component list); face-to-face ASME B16.10",
+          "source": "VAC Standard Component List (RIPPL code / model / make = authoritative)"
         }
       ],
       "tools": [
@@ -73,10 +100,10 @@
           "source": "golden-steplist-config01.md A2"
         },
         {
-          "text": "Design break torque approx 5 Nm at DN15 (value WITHOUT safety factor per the catalogue note). The RNP50-SR40 actuator delivers 9-13 Nm at 4 bar, so it is adequately sized with a safety margin.",
-          "why": "Confirms the actuator can drive the valve at the AFR-set 4 bar.",
-          "failureMode": "Undersized actuator would stall the valve.",
-          "source": "L&T catalogue p7 (valve torque data) vs Valmet catalogue p5"
+          "text": "Materials (component list): body ASTM A216 WCB, stem ASTM A479 Type 316, trim CF8M/F316, seat PTFE; design ISO 17292; ends flanged ASME B16.5 #150.",
+          "why": "Confirmed construction for the BV1121 valve.",
+          "failureMode": "n/a (spec record).",
+          "source": "VAC Standard Component List (RIPPL code / model / make = authoritative)"
         }
       ],
       "checks": [
@@ -94,8 +121,8 @@
         "app/public/valve.glb"
       ],
       "provenance": {
-        "lastUpdated": "2026-07-17",
-        "overallConfidence": "OEM-confirmed (L&T catalogue): ISO 5211 top flange = F03, bore 11 mm RB, face-to-face 108 mm, design torque ~5 Nm. Open: stem square size (not in catalogue tables); process-flange bolt spec."
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "CORRECTED from component list: model is L1FF1C-015mm (FULL bore), not L1RF1C (regular bore). ISO 5211 F03 read off the regular-bore catalogue table - re-confirm for full bore. Materials/design confirmed."
       }
     },
     "lever": {
@@ -293,9 +320,9 @@
       "category": "actuator",
       "status": "modeled",
       "oem": {
-        "make": "Valmet (Neles)",
-        "model": "RNP50SR40",
-        "datasheetRef": "docs/Datasheets/Valmet Actuator Catalogue.pdf (IMO-218EN, Issue 5/2022)"
+        "make": "Neles (Valmet)",
+        "model": "RNP50SR40CA1GD",
+        "datasheetRef": "docs/Datasheets/Valmet Actuator Catalogue.pdf (IMO-218EN, 5/2022); VAC Standard Component List (RIPPL code / model / make = authoritative)"
       },
       "interfaces": [
         {
@@ -381,7 +408,7 @@
       "hookups": [
         {
           "type": "air",
-          "detail": "Operating media air/nitrogen. SR40 spring rated 4.0 barg (matches AFR set 4 bar). Max supply 8 barg, design 10 barg. Output torque RNP50-SR40 at 4 bar = 9-13 Nm (min-max over stroke). IP66/67, -20..+80 C (temp code G). Source: Valmet catalogue p4, p5."
+          "detail": "Operating media air/nitrogen. SR40 spring rated 4.0 barg (matches AFR set 4 bar). Max supply 8 barg, design 10 barg. Output torque RNP50-SR40 at 4 bar = 9-13 Nm (min-max over stroke). IP66/67, -20..+80 C (temp code G). Source: Valmet catalogue p4, p5. | Component list: full code RNP50SR40CA1GD, pneumatic connection 1/4\" NPT, working supply max 6.5 bar(g). Code 'C' = spring-to-close (fail-close), consistent with the fail-action decision."
         }
       ],
       "media": [
@@ -389,7 +416,7 @@
       ],
       "provenance": {
         "lastUpdated": "2026-07-16",
-        "overallConfidence": "OEM-confirmed (Valmet catalogue): pressures, spring rating, ISO 5211 flanges F03/F05, 14 mm bi-square drive, NAMUR M5. Fail-action = FAIL-CLOSE (spring-to-close, code C) confirmed by Arnav 2026-07-16. Open: valve-mount torque; F-code resolved: actuator uses F05/M6 to bracket, valve is F03 (Arnav 2026-07-17)."
+        "overallConfidence": "Model RNP50SR40CA1GD confirmed (component list). OEM-confirmed (Valmet catalogue): pressures, spring rating, ISO 5211 flanges F03/F05, 14 mm bi-square drive, NAMUR M5. Fail-action = FAIL-CLOSE (spring-to-close, code C) confirmed by Arnav 2026-07-16. Open: valve-mount torque; F-code resolved: actuator uses F05/M6 to bracket, valve is F03 (Arnav 2026-07-17)."
       }
     },
     "sov": {
@@ -401,13 +428,14 @@
       "oem": {
         "make": "Rotex",
         "model": "30318-5-2G+I-24VDC-37",
-        "datasheetRef": "drawings/30318-5-2G+24VDC 230VAC 110AC-16.pdf"
+        "datasheetRef": "docs/Datasheets/30318-SOV.pdf; VAC Standard Component List"
       },
       "interfaces": [
         {
           "standard": "NAMUR (VDMA 24563)",
-          "size": null,
-          "role": "actuator mount"
+          "size": "NAMUR (2x M5 from actuator face); 1/4\" air ports",
+          "role": "actuator mount",
+          "source": "Rotex 30318 datasheet + Valmet p25"
         }
       ],
       "tools": [
@@ -443,6 +471,12 @@
           "why": "Only the supply port should be open; exhaust must vent freely.",
           "failureMode": "Cross-porting or blocked exhaust; erratic stroke.",
           "source": "golden-steplist-config01.md F1"
+        },
+        {
+          "text": "3/2 normally-closed direct-acting NAMUR SOV; on de-energise/air-fail it returns (spring). Match the O-ring gate to the ordered function before mounting.",
+          "why": "Sets the fail behaviour and airflow path.",
+          "failureMode": "Actuator strokes wrong or not at all.",
+          "source": "Rotex 30318 datasheet p1"
         }
       ],
       "checks": [
@@ -457,12 +491,12 @@
       ],
       "hookups": [
         {
-          "type": "electrical",
-          "detail": "24 VDC coil, flameproof; 1/2\" NPT cable entry (per BV1123 BOM family spec, confirm for SV1007)."
+          "type": "air",
+          "detail": "3/2 direct-acting NAMUR solenoid, normally closed. Operating pressure 0-10 bar. Ports 1/4\" (BSP or NPT). Direct-mount to the actuator NAMUR face. Source: Rotex 30318 datasheet."
         },
         {
-          "type": "air",
-          "detail": "NAMUR-ported to the actuator; supply fed from the AFR via the air train."
+          "type": "electrical",
+          "detail": "24 VDC coil; cable entry 1/2\" NPT. Enclosure per suffix: -16 = weatherproof IP66/IP67 (component-list standard SV1005); -37 = FLAMEPROOF Ex d IIC T4/T6 IP67 (DB's SV1007). Confirm which applies to Config 1 (OQ-16). Source: Rotex 30318 datasheet."
         }
       ],
       "media": [
@@ -470,7 +504,7 @@
       ],
       "provenance": {
         "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity confirmed; electrical entry and fastener/torque to confirm"
+        "overallConfidence": "Rotex 30318 datasheet confirmed: 3/2 NC NAMUR, 24VDC, 0-10 bar, 1/4\" ports, 1/2\" NPT cable entry. CODE/CERT open (OQ-16): weatherproof -16 (SV1005) vs flameproof -37 (SV1007)."
       }
     },
     "afr": {
@@ -482,7 +516,7 @@
       "oem": {
         "make": "Shavo",
         "model": "SB10-2GM2T/RGK-NB",
-        "datasheetRef": ""
+        "datasheetRef": "docs/Datasheets/AFR_ SB-10.pdf; VAC Standard Component List"
       },
       "interfaces": [
         {
@@ -529,6 +563,12 @@
           "why": "Config 1 set pressure.",
           "failureMode": "Under/over-pressure to the actuator.",
           "source": "fitter decision 2026-07-13 (golden-steplist-config01.md H3)"
+        },
+        {
+          "text": "PC (polycarbonate) bowl limits: max inlet 10.5 bar, max ambient 50 C. Regulator is the relieving type.",
+          "why": "Operating envelope for the AFR bowl.",
+          "failureMode": "Bowl over-pressure / over-temperature.",
+          "source": "Shavo SB10 datasheet"
         }
       ],
       "checks": [
@@ -540,15 +580,16 @@
       "hookups": [
         {
           "type": "air",
-          "detail": "1/4\" BSP inlet via push-in supply fitting (PTFE-taped); outlet to SOV via bent pipe. Regulation range per SB10 datasheet to confirm; set 4 bar."
+          "detail": "Ports G 1/4 BSP parallel (F). Filter element 25 micron; transparent polycarbonate bowl; manual drain; RELIEVING regulator. Regulated spring range 10-100 psi (0.70-7.0 bar) - Config 1 set 4 bar. Max inlet 10.5 bar (PC bowl); max ambient 50 C (PC bowl). Flow at 1/4\" ~19 scfm, Cv 0.35. Source: Shavo SB10 datasheet + component list."
         }
       ],
       "media": [
-        "app/public/afr.glb"
+        "Component STEP files/AFR SB10-2G-M2T-RGK-NB.STEP (OFFICIAL geometry truth)",
+        "app/public/afr_real.glb (converted via cascadio, true-scale 40x160x100 mm, includes integral gauge)"
       ],
       "provenance": {
         "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity confirmed; pressure range and fasteners to confirm"
+        "overallConfidence": "OFFICIAL STEP received + converted (first real-geometry part). Shavo SB10 confirmed: G1/4 BSP, 25 micron, PC bowl, manual drain, relieving, spring range 0.7-7 bar, integral 40 mm dial gauge (Rc1/8, back). Mounting via optional bracket/panel - Config 1 uses a Rajdeep custom L-plate (OQ-07)."
       }
     },
     "lsb": {
@@ -560,13 +601,14 @@
       "oem": {
         "make": "Valmet",
         "model": "KS2V1A2NGRNN+BKT",
-        "datasheetRef": ""
+        "datasheetRef": "docs/Datasheets/K-Series-Bulletin S100-1EN-NELES.pdf; VAC Standard Component List"
       },
       "interfaces": [
         {
           "standard": "VDI/VDE 3845",
-          "size": null,
-          "role": "mounts directly to actuator top via its integral bracket"
+          "size": "VDI/VDE 3845 mounting face + NAMUR shaft",
+          "role": "mounts directly on the actuator top; unit shaft couples to the actuator (NAMUR) shaft",
+          "source": "Neles K-series bulletin p1/p3"
         },
         {
           "standard": "NAMUR pinion shaft",
@@ -608,6 +650,12 @@
           "why": "Cams define the switch trip points.",
           "failureMode": "False open/closed signals.",
           "source": "golden-steplist-config01.md (deferred test)"
+        },
+        {
+          "text": "Model coding: KS = K-series STANDARD housing, KC = K-series COMPACT housing; the '2' = two switch elements. Set the cams to the open/closed limits after mounting.",
+          "why": "KS vs KC is only the housing; both carry 2 switches here.",
+          "failureMode": "Ordering the wrong housing size.",
+          "source": "Neles K-series bulletin p1"
         }
       ],
       "checks": [
@@ -623,7 +671,7 @@
       "hookups": [
         {
           "type": "electrical",
-          "detail": "2x SPDT micro-switches (Honeywell V15S05 per BOM family spec); position feedback contacts. Confirm for LB1002."
+          "detail": "2x SPDT mechanical switches (Honeywell V15S05-CZ100A05-01 per component list); IP67; housing epoxy powder-coated die-cast aluminium (LM6); cable entry 1/2\" NPT (2 entries); temp -20 to +80 C general. Adjustable colour-coded cams; 90-deg open/closed visual indicator on the dome. Source: Neles K-series bulletin."
         }
       ],
       "media": [
@@ -631,19 +679,19 @@
       ],
       "provenance": {
         "lastUpdated": "2026-07-14",
-        "overallConfidence": "identity confirmed; integral bracket confirmed from shop photo 2026-07-14; switch model and fastener sizes/torque to confirm"
+        "overallConfidence": "Neles K-series confirmed: VDI/VDE 3845 + NAMUR shaft, IP67, 2x SPDT Honeywell V15, 1/2\" NPT entry, die-cast alu housing, +BKT integral bracket. CODE open (OQ-17): KS2V (standard housing, DB LB1002) vs KC2V (compact housing, list LB1001)."
       }
     },
     "gauge": {
       "partId": "gauge",
       "itemSubCode": null,
-      "displayName": "Dial pressure gauge (AFR)",
+      "displayName": "Dial pressure gauge (integral to the Shavo AFR)",
       "category": "instrument",
       "status": "planned",
       "oem": {
-        "make": "",
-        "model": "",
-        "datasheetRef": ""
+        "make": "Shavo (supplied with the AFR)",
+        "model": "40 mm dial pressure gauge, Rc1/8 back connection (integral to Shavo AFR)",
+        "datasheetRef": "comes within the Shavo AFR STEP file"
       },
       "interfaces": [
         {
@@ -657,10 +705,12 @@
       "rules": [],
       "checks": [],
       "hookups": [],
-      "media": [],
+      "media": [
+        "(part of the Shavo AFR STEP)"
+      ],
       "provenance": {
-        "lastUpdated": "2026-07-14",
-        "overallConfidence": "planned asset; not yet modeled or specced"
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "Integral to the Shavo AFR (arrives in the AFR STEP). 40 mm dial, Rc1/8 back-connected, 0-150 psi (0-10 bar) recommended range. Not a Marsh part."
       }
     },
     "afr-plate": {
@@ -765,6 +815,5238 @@
       "provenance": {
         "lastUpdated": "2026-07-14",
         "overallConfidence": "planned reusable asset; carries torque callout per joint"
+      }
+    },
+    "mor": {
+      "partId": "mor",
+      "itemSubCode": "MR1002",
+      "displayName": "Manual override / quarter-turn worm gearbox operator (handwheel declutchable)",
+      "category": "manual-override",
+      "status": "modeled",
+      "oem": {
+        "make": "QTAPL",
+        "model": "QTM-250",
+        "datasheetRef": null
+      },
+      "interfaces": [
+        {
+          "standard": "square drive",
+          "size": "11 x 11 mm",
+          "role": "drive square (per part filename 'SQ11X11') - confirm whether input or valve-stem output",
+          "source": "STEP filename QTAPL-QTM-250, SQ11X11 + CAD (geometry). Role/direction NOT yet confirmed."
+        },
+        {
+          "standard": "ISO 5211",
+          "size": null,
+          "role": "mounting flange (assumed; not yet confirmed from drawing)",
+          "source": null
+        }
+      ],
+      "tools": [
+        "spanner (size per fastener)",
+        "Allen key"
+      ],
+      "fasteners": [
+        {
+          "role": "internal gearbox assembly fasteners (housing/cover/handwheel - service, not VAC assembly)",
+          "size": "M5, M6, M8 present",
+          "count": null,
+          "type": "hex bolt / nut / washer",
+          "torqueNm": null,
+          "pattern": null,
+          "source": "CAD part-tree names (HEX BOLT M5/M6/M8, WASHER M5/M6/M8). Torques not known.",
+          "confidence": "sizes from CAD tree; torque placeholder"
+        }
+      ],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [
+        "app/public/mor.glb"
+      ],
+      "cadParts": [
+        "QTM-250 HOUSING",
+        "QTM-250 COVER",
+        "QTM-250 GASKET",
+        "QTM-250 ALLINGNMENT ROD",
+        "QTM-250 SHAFT",
+        "QTM-250 SELECTOR ASSEMBLY",
+        "QTM-250 LEVER",
+        "QTM-250 HANDWHEEL",
+        "QTM-250 WORM WHEEL UPDATED",
+        "WORM",
+        "ECCENTRIC BUSH LEFT",
+        "ECCENTRIC BUSH RIGHT",
+        "ROUND LABLE"
+      ],
+      "provenance": {
+        "lastUpdated": "2026-07-20",
+        "overallConfidence": "PLACEHOLDER. Model converted from Arnav-supplied SolidWorks 2025 STEP (AP214) on 2026-07-20; 32-part assembly, part-tree names captured. No datasheet yet: OEM model QTM-250 (make QTAPL) read from filename/part names only. Interfaces, ratio, torque figure, mounting standard, and whether the 11x11 square is input or output all UNCONFIRMED. Do not use any spec from this record for assembly until confirmed."
+      }
+    },
+    "positioner": {
+      "partId": "positioner",
+      "itemSubCode": "PR1001",
+      "displayName": "Electro-pneumatic positioner (weatherproof)",
+      "category": "positioner",
+      "status": "library (accessory)",
+      "oem": {
+        "make": "Rotex",
+        "model": "RTX1000-R-D-2-R0-2G-4R-ST-FD-N (RTX1000R)",
+        "datasheetRef": "VAC Standard Component List (RIPPL code / model / make = authoritative)"
+      },
+      "interfaces": [
+        {
+          "standard": "VDI/VDE 3845",
+          "size": null,
+          "role": "actuator top mount (accessory)"
+        }
+      ],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [
+        {
+          "type": "electrical",
+          "detail": "4-20 mA input, rotary electro-pneumatic (per component list)"
+        }
+      ],
+      "media": [
+        "Component STEP files/POSITIONER 1-01-01-A-07372 - RTX1000R- WEATHERPROOF - FD.STEP"
+      ],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "library stub from official STEP + component list; used in positioner-controlled configs, not Config 1/2."
+      }
+    },
+    "BV1205": {
+      "partId": "BV1205",
+      "itemSubCode": "BV1205",
+      "displayName": "L3FSWC-015mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWC-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1206": {
+      "partId": "BV1206",
+      "itemSubCode": "BV1206",
+      "displayName": "L3RSWC-020mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWC-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1207": {
+      "partId": "BV1207",
+      "itemSubCode": "BV1207",
+      "displayName": "L3RSWC-025mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWC-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1209": {
+      "partId": "BV1209",
+      "itemSubCode": "BV1209",
+      "displayName": "L3RSWC-040mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWC-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1210": {
+      "partId": "BV1210",
+      "itemSubCode": "BV1210",
+      "displayName": "L3RSWC-050mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWC-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1211": {
+      "partId": "BV1211",
+      "itemSubCode": "BV1211",
+      "displayName": "L3FSWS-008mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-008mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1212": {
+      "partId": "BV1212",
+      "itemSubCode": "BV1212",
+      "displayName": "L3FSWS-010mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-010mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1213": {
+      "partId": "BV1213",
+      "itemSubCode": "BV1213",
+      "displayName": "L3FSWS-015mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1214": {
+      "partId": "BV1214",
+      "itemSubCode": "BV1214",
+      "displayName": "L3RSWS-020mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWS-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1215": {
+      "partId": "BV1215",
+      "itemSubCode": "BV1215",
+      "displayName": "L3RSWS-025mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWS-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1217": {
+      "partId": "BV1217",
+      "itemSubCode": "BV1217",
+      "displayName": "L3RSWS-040mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWS-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1218": {
+      "partId": "BV1218",
+      "itemSubCode": "BV1218",
+      "displayName": "L3RSWS-050mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWS-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1219": {
+      "partId": "BV1219",
+      "itemSubCode": "BV1219",
+      "displayName": "L3FSWC-020mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWC-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1220": {
+      "partId": "BV1220",
+      "itemSubCode": "BV1220",
+      "displayName": "L3FSWC-025mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWC-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1221": {
+      "partId": "BV1221",
+      "itemSubCode": "BV1221",
+      "displayName": "L3FSWC-032mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWC-032mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1222": {
+      "partId": "BV1222",
+      "itemSubCode": "BV1222",
+      "displayName": "L3FSWC-040mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWC-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1223": {
+      "partId": "BV1223",
+      "itemSubCode": "BV1223",
+      "displayName": "L3FSWC-050mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWC-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1224": {
+      "partId": "BV1224",
+      "itemSubCode": "BV1224",
+      "displayName": "L3FSWS-020mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1225": {
+      "partId": "BV1225",
+      "itemSubCode": "BV1225",
+      "displayName": "L3FSWS-025mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1226": {
+      "partId": "BV1226",
+      "itemSubCode": "BV1226",
+      "displayName": "L3FSWS-032mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-032mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1227": {
+      "partId": "BV1227",
+      "itemSubCode": "BV1227",
+      "displayName": "L3FSWS-040mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1228": {
+      "partId": "BV1228",
+      "itemSubCode": "BV1228",
+      "displayName": "L3FSWS-050mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWS-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1528": {
+      "partId": "BV1528",
+      "itemSubCode": "BV1528",
+      "displayName": "L3FSWSP-008mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWSP-008mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1529": {
+      "partId": "BV1529",
+      "itemSubCode": "BV1529",
+      "displayName": "L3FSWSP-010mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWSP-010mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1530": {
+      "partId": "BV1530",
+      "itemSubCode": "BV1530",
+      "displayName": "L3FSWSP-015mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FSWSP-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1531": {
+      "partId": "BV1531",
+      "itemSubCode": "BV1531",
+      "displayName": "L3RSWSP-020mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWSP-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1532": {
+      "partId": "BV1532",
+      "itemSubCode": "BV1532",
+      "displayName": "L3RSWSP-025mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWSP-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1533": {
+      "partId": "BV1533",
+      "itemSubCode": "BV1533",
+      "displayName": "L3RSWSP-032mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWSP-032mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1534": {
+      "partId": "BV1534",
+      "itemSubCode": "BV1534",
+      "displayName": "L3RSWSP-040mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWSP-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1535": {
+      "partId": "BV1535",
+      "itemSubCode": "BV1535",
+      "displayName": "L3RSWSP-050mm (valve-ball-socketweld)",
+      "category": "valve-ball-socketweld",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RSWSP-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1001": {
+      "partId": "PA1001",
+      "itemSubCode": "PA1001",
+      "displayName": "RNP040DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP040DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1002": {
+      "partId": "PA1002",
+      "itemSubCode": "PA1002",
+      "displayName": "RNP050DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP050DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1003": {
+      "partId": "PA1003",
+      "itemSubCode": "PA1003",
+      "displayName": "RNP063DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP063DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1004": {
+      "partId": "PA1004",
+      "itemSubCode": "PA1004",
+      "displayName": "RNP080DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP080DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1005": {
+      "partId": "PA1005",
+      "itemSubCode": "PA1005",
+      "displayName": "RNP090DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP090DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1006": {
+      "partId": "PA1006",
+      "itemSubCode": "PA1006",
+      "displayName": "RNP100DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP100DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1007": {
+      "partId": "PA1007",
+      "itemSubCode": "PA1007",
+      "displayName": "RNP110DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP110DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1008": {
+      "partId": "PA1008",
+      "itemSubCode": "PA1008",
+      "displayName": "RNP125DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP125DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1009": {
+      "partId": "PA1009",
+      "itemSubCode": "PA1009",
+      "displayName": "RNP150DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP150DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1010": {
+      "partId": "PA1010",
+      "itemSubCode": "PA1010",
+      "displayName": "RNP175DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP175DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1011": {
+      "partId": "PA1011",
+      "itemSubCode": "PA1011",
+      "displayName": "RNP200DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP200DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1012": {
+      "partId": "PA1012",
+      "itemSubCode": "PA1012",
+      "displayName": "RNP250DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP250DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1013": {
+      "partId": "PA1013",
+      "itemSubCode": "PA1013",
+      "displayName": "RNP300DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP300DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1014": {
+      "partId": "PA1014",
+      "itemSubCode": "PA1014",
+      "displayName": "RNP350DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP350DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1016": {
+      "partId": "PA1016",
+      "itemSubCode": "PA1016",
+      "displayName": "RNP40SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP40SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1022": {
+      "partId": "PA1022",
+      "itemSubCode": "PA1022",
+      "displayName": "RNP63SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP63SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1025": {
+      "partId": "PA1025",
+      "itemSubCode": "PA1025",
+      "displayName": "RNP80SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP80SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1028": {
+      "partId": "PA1028",
+      "itemSubCode": "PA1028",
+      "displayName": "RNP90SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP90SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1031": {
+      "partId": "PA1031",
+      "itemSubCode": "PA1031",
+      "displayName": "RNP100SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP100SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1034": {
+      "partId": "PA1034",
+      "itemSubCode": "PA1034",
+      "displayName": "RNP110SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP110SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1037": {
+      "partId": "PA1037",
+      "itemSubCode": "PA1037",
+      "displayName": "RNP125SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP125SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1040": {
+      "partId": "PA1040",
+      "itemSubCode": "PA1040",
+      "displayName": "RNP150SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP150SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1043": {
+      "partId": "PA1043",
+      "itemSubCode": "PA1043",
+      "displayName": "RNP175SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP175SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1046": {
+      "partId": "PA1046",
+      "itemSubCode": "PA1046",
+      "displayName": "RNP200SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP200SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1049": {
+      "partId": "PA1049",
+      "itemSubCode": "PA1049",
+      "displayName": "RNP250SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP250SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1052": {
+      "partId": "PA1052",
+      "itemSubCode": "PA1052",
+      "displayName": "RNP300SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP300SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1055": {
+      "partId": "PA1055",
+      "itemSubCode": "PA1055",
+      "displayName": "RNP350SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP350SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1113": {
+      "partId": "PA1113",
+      "itemSubCode": "PA1113",
+      "displayName": "RNP040DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP040DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1114": {
+      "partId": "PA1114",
+      "itemSubCode": "PA1114",
+      "displayName": "RNP050DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP050DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1115": {
+      "partId": "PA1115",
+      "itemSubCode": "PA1115",
+      "displayName": "RNP063DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP063DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1116": {
+      "partId": "PA1116",
+      "itemSubCode": "PA1116",
+      "displayName": "RNP080DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP080DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1117": {
+      "partId": "PA1117",
+      "itemSubCode": "PA1117",
+      "displayName": "RNP090DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP090DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1118": {
+      "partId": "PA1118",
+      "itemSubCode": "PA1118",
+      "displayName": "RNP100DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP100DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1119": {
+      "partId": "PA1119",
+      "itemSubCode": "PA1119",
+      "displayName": "RNP110DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP110DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1120": {
+      "partId": "PA1120",
+      "itemSubCode": "PA1120",
+      "displayName": "RNP125DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP125DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1121": {
+      "partId": "PA1121",
+      "itemSubCode": "PA1121",
+      "displayName": "RNP150DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP150DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1122": {
+      "partId": "PA1122",
+      "itemSubCode": "PA1122",
+      "displayName": "RNP175DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP175DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1123": {
+      "partId": "PA1123",
+      "itemSubCode": "PA1123",
+      "displayName": "RNP200DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP200DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1124": {
+      "partId": "PA1124",
+      "itemSubCode": "PA1124",
+      "displayName": "RNP250DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP250DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1125": {
+      "partId": "PA1125",
+      "itemSubCode": "PA1125",
+      "displayName": "RNP300DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP300DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1126": {
+      "partId": "PA1126",
+      "itemSubCode": "PA1126",
+      "displayName": "RNP350DN00DA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP350DN00DA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1128": {
+      "partId": "PA1128",
+      "itemSubCode": "PA1128",
+      "displayName": "RNP40SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP40SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1131": {
+      "partId": "PA1131",
+      "itemSubCode": "PA1131",
+      "displayName": "RNP50SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP50SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1134": {
+      "partId": "PA1134",
+      "itemSubCode": "PA1134",
+      "displayName": "RNP63SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP63SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1137": {
+      "partId": "PA1137",
+      "itemSubCode": "PA1137",
+      "displayName": "RNP80SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP80SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1140": {
+      "partId": "PA1140",
+      "itemSubCode": "PA1140",
+      "displayName": "RNP90SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP90SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1143": {
+      "partId": "PA1143",
+      "itemSubCode": "PA1143",
+      "displayName": "RNP100SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP100SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1146": {
+      "partId": "PA1146",
+      "itemSubCode": "PA1146",
+      "displayName": "RNP110SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP110SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1149": {
+      "partId": "PA1149",
+      "itemSubCode": "PA1149",
+      "displayName": "RNP125SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP125SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1152": {
+      "partId": "PA1152",
+      "itemSubCode": "PA1152",
+      "displayName": "RNP150SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP150SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1155": {
+      "partId": "PA1155",
+      "itemSubCode": "PA1155",
+      "displayName": "RNP175SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP175SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1158": {
+      "partId": "PA1158",
+      "itemSubCode": "PA1158",
+      "displayName": "RNP200SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP200SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1161": {
+      "partId": "PA1161",
+      "itemSubCode": "PA1161",
+      "displayName": "RNP250SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP250SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1164": {
+      "partId": "PA1164",
+      "itemSubCode": "PA1164",
+      "displayName": "RNP300SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP300SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1167": {
+      "partId": "PA1167",
+      "itemSubCode": "PA1167",
+      "displayName": "RNP350SR40CA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP350SR40CA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1225": {
+      "partId": "PA1225",
+      "itemSubCode": "PA1225",
+      "displayName": "RNP50SR40AA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP50SR40AA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1226": {
+      "partId": "PA1226",
+      "itemSubCode": "PA1226",
+      "displayName": "RNP63SR40AA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP63SR40AA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1227": {
+      "partId": "PA1227",
+      "itemSubCode": "PA1227",
+      "displayName": "RNP125SR40AA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP125SR40AA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1228": {
+      "partId": "PA1228",
+      "itemSubCode": "PA1228",
+      "displayName": "RNP250SR40AA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP250SR40AA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1229": {
+      "partId": "PA1229",
+      "itemSubCode": "PA1229",
+      "displayName": "RNP40SR40AA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP40SR40AA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "PA1230": {
+      "partId": "PA1230",
+      "itemSubCode": "PA1230",
+      "displayName": "RNP90SR40AA1GD (actuator)",
+      "category": "actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "RNP90SR40AA1GD",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "LB1001": {
+      "partId": "LB1001",
+      "itemSubCode": "LB1001",
+      "displayName": "KC2V1A3NGRNN+BKT (limit-switch-box)",
+      "category": "limit-switch-box",
+      "status": "catalog",
+      "oem": {
+        "make": "Neles (Valmet)",
+        "model": "KC2V1A3NGRNN+BKT",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "SV1001": {
+      "partId": "SV1001",
+      "itemSubCode": "SV1001",
+      "displayName": "51424-6-2G+I-24VDC-16 (sov)",
+      "category": "sov",
+      "status": "catalog",
+      "oem": {
+        "make": "Rotex",
+        "model": "51424-6-2G+I-24VDC-16",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "SV1002": {
+      "partId": "SV1002",
+      "itemSubCode": "SV1002",
+      "displayName": "51424-6-2G+I-230V 50Hz-16 (sov)",
+      "category": "sov",
+      "status": "catalog",
+      "oem": {
+        "make": "Rotex",
+        "model": "51424-6-2G+I-230V 50Hz-16",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "SV1005": {
+      "partId": "SV1005",
+      "itemSubCode": "SV1005",
+      "displayName": "30318-5-2G+I-24VDC-16 (sov)",
+      "category": "sov",
+      "status": "catalog",
+      "oem": {
+        "make": "Rotex",
+        "model": "30318-5-2G+I-24VDC-16",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "SV1006": {
+      "partId": "SV1006",
+      "itemSubCode": "SV1006",
+      "displayName": "30318-5-2G+III-230V 50Hz-16 (sov)",
+      "category": "sov",
+      "status": "catalog",
+      "oem": {
+        "make": "Rotex",
+        "model": "30318-5-2G+III-230V 50Hz-16",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1101": {
+      "partId": "BV1101",
+      "itemSubCode": "BV1101",
+      "displayName": "L2FF1C-015mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1102": {
+      "partId": "BV1102",
+      "itemSubCode": "BV1102",
+      "displayName": "L2FF1C-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1103": {
+      "partId": "BV1103",
+      "itemSubCode": "BV1103",
+      "displayName": "L2FF1C-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1104": {
+      "partId": "BV1104",
+      "itemSubCode": "BV1104",
+      "displayName": "L2FF1C-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1105": {
+      "partId": "BV1105",
+      "itemSubCode": "BV1105",
+      "displayName": "L2FF1C-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1106": {
+      "partId": "BV1106",
+      "itemSubCode": "BV1106",
+      "displayName": "L2FF1C-065mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1107": {
+      "partId": "BV1107",
+      "itemSubCode": "BV1107",
+      "displayName": "L2FF1C-080mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1108": {
+      "partId": "BV1108",
+      "itemSubCode": "BV1108",
+      "displayName": "L2FF1C-0100mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-0100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1109": {
+      "partId": "BV1109",
+      "itemSubCode": "BV1109",
+      "displayName": "L2FF1C-0150mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-0150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1110": {
+      "partId": "BV1110",
+      "itemSubCode": "BV1110",
+      "displayName": "L2FF1C-0200mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1C-0200mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1111": {
+      "partId": "BV1111",
+      "itemSubCode": "BV1111",
+      "displayName": "L2FF1S-015mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1112": {
+      "partId": "BV1112",
+      "itemSubCode": "BV1112",
+      "displayName": "L2FF1S-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1113": {
+      "partId": "BV1113",
+      "itemSubCode": "BV1113",
+      "displayName": "L2FF1S-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1114": {
+      "partId": "BV1114",
+      "itemSubCode": "BV1114",
+      "displayName": "L2FF1S-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1115": {
+      "partId": "BV1115",
+      "itemSubCode": "BV1115",
+      "displayName": "L2FF1S-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1116": {
+      "partId": "BV1116",
+      "itemSubCode": "BV1116",
+      "displayName": "L2FF1S-065mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1117": {
+      "partId": "BV1117",
+      "itemSubCode": "BV1117",
+      "displayName": "L2FF1S-080mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1118": {
+      "partId": "BV1118",
+      "itemSubCode": "BV1118",
+      "displayName": "L2FF1S-0100mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-0100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1119": {
+      "partId": "BV1119",
+      "itemSubCode": "BV1119",
+      "displayName": "L2FF1S-0150mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-0150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1120": {
+      "partId": "BV1120",
+      "itemSubCode": "BV1120",
+      "displayName": "L2FF1S-0200mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1S-0200mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1122": {
+      "partId": "BV1122",
+      "itemSubCode": "BV1122",
+      "displayName": "L1RF1C-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1123": {
+      "partId": "BV1123",
+      "itemSubCode": "BV1123",
+      "displayName": "L1RF1C-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1124": {
+      "partId": "BV1124",
+      "itemSubCode": "BV1124",
+      "displayName": "L1RF1C-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1125": {
+      "partId": "BV1125",
+      "itemSubCode": "BV1125",
+      "displayName": "L1RF1C-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1126": {
+      "partId": "BV1126",
+      "itemSubCode": "BV1126",
+      "displayName": "L1RF1C-065mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1127": {
+      "partId": "BV1127",
+      "itemSubCode": "BV1127",
+      "displayName": "L1RF1C-080mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1128": {
+      "partId": "BV1128",
+      "itemSubCode": "BV1128",
+      "displayName": "L1RF1C-100mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1129": {
+      "partId": "BV1129",
+      "itemSubCode": "BV1129",
+      "displayName": "L1RF1C-150mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1C-150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1130": {
+      "partId": "BV1130",
+      "itemSubCode": "BV1130",
+      "displayName": "L1FF1S-015mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1FF1S-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1131": {
+      "partId": "BV1131",
+      "itemSubCode": "BV1131",
+      "displayName": "L1RF1S-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1132": {
+      "partId": "BV1132",
+      "itemSubCode": "BV1132",
+      "displayName": "L1RF1S-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1133": {
+      "partId": "BV1133",
+      "itemSubCode": "BV1133",
+      "displayName": "L1RF1S-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1134": {
+      "partId": "BV1134",
+      "itemSubCode": "BV1134",
+      "displayName": "L1RF1S-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1135": {
+      "partId": "BV1135",
+      "itemSubCode": "BV1135",
+      "displayName": "L1RF1S-065mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1136": {
+      "partId": "BV1136",
+      "itemSubCode": "BV1136",
+      "displayName": "L1RF1S-080mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1137": {
+      "partId": "BV1137",
+      "itemSubCode": "BV1137",
+      "displayName": "L1RF1S-100mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1138": {
+      "partId": "BV1138",
+      "itemSubCode": "BV1138",
+      "displayName": "L1RF1S-150mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1S-150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1245": {
+      "partId": "BV1245",
+      "itemSubCode": "BV1245",
+      "displayName": "L3FF1C-015mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FF1C-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1246": {
+      "partId": "BV1246",
+      "itemSubCode": "BV1246",
+      "displayName": "L3RF1C-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1C-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1247": {
+      "partId": "BV1247",
+      "itemSubCode": "BV1247",
+      "displayName": "L3RF1C-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1C-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1248": {
+      "partId": "BV1248",
+      "itemSubCode": "BV1248",
+      "displayName": "L3RF1C-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1C-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1249": {
+      "partId": "BV1249",
+      "itemSubCode": "BV1249",
+      "displayName": "L3RF1C-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1C-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1250": {
+      "partId": "BV1250",
+      "itemSubCode": "BV1250",
+      "displayName": "L3FF1S-015mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3FF1S-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1251": {
+      "partId": "BV1251",
+      "itemSubCode": "BV1251",
+      "displayName": "L3RF1S-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1S-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1252": {
+      "partId": "BV1252",
+      "itemSubCode": "BV1252",
+      "displayName": "L3RF1S-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1S-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1253": {
+      "partId": "BV1253",
+      "itemSubCode": "BV1253",
+      "displayName": "L3RF1S-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1S-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1254": {
+      "partId": "BV1254",
+      "itemSubCode": "BV1254",
+      "displayName": "L3RF1S-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L3RF1S-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1327": {
+      "partId": "BV1327",
+      "itemSubCode": "BV1327",
+      "displayName": "L1FF1CP-015mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1FF1CP-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1328": {
+      "partId": "BV1328",
+      "itemSubCode": "BV1328",
+      "displayName": "L1RF1CP-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1329": {
+      "partId": "BV1329",
+      "itemSubCode": "BV1329",
+      "displayName": "L1RF1CP-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1330": {
+      "partId": "BV1330",
+      "itemSubCode": "BV1330",
+      "displayName": "L1RF1CP-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1331": {
+      "partId": "BV1331",
+      "itemSubCode": "BV1331",
+      "displayName": "L1RF1CP-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1332": {
+      "partId": "BV1332",
+      "itemSubCode": "BV1332",
+      "displayName": "L1RF1CP-065mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1333": {
+      "partId": "BV1333",
+      "itemSubCode": "BV1333",
+      "displayName": "L1RF1CP-080mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1334": {
+      "partId": "BV1334",
+      "itemSubCode": "BV1334",
+      "displayName": "L1RF1CP-100mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1335": {
+      "partId": "BV1335",
+      "itemSubCode": "BV1335",
+      "displayName": "L1RF1CP-150mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1CP-150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1336": {
+      "partId": "BV1336",
+      "itemSubCode": "BV1336",
+      "displayName": "L2FF1CP-015mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-015mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1337": {
+      "partId": "BV1337",
+      "itemSubCode": "BV1337",
+      "displayName": "L2FF1CP-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1338": {
+      "partId": "BV1338",
+      "itemSubCode": "BV1338",
+      "displayName": "L2FF1CP-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1339": {
+      "partId": "BV1339",
+      "itemSubCode": "BV1339",
+      "displayName": "L2FF1CP-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1340": {
+      "partId": "BV1340",
+      "itemSubCode": "BV1340",
+      "displayName": "L2FF1CP-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1341": {
+      "partId": "BV1341",
+      "itemSubCode": "BV1341",
+      "displayName": "L2FF1CP-065mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1342": {
+      "partId": "BV1342",
+      "itemSubCode": "BV1342",
+      "displayName": "L2FF1CP-080mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1343": {
+      "partId": "BV1343",
+      "itemSubCode": "BV1343",
+      "displayName": "L2FF1CP-0100mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-0100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1344": {
+      "partId": "BV1344",
+      "itemSubCode": "BV1344",
+      "displayName": "L2FF1CP-0150mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-0150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1345": {
+      "partId": "BV1345",
+      "itemSubCode": "BV1345",
+      "displayName": "L2FF1CP-0200mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L2FF1CP-0200mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1480": {
+      "partId": "BV1480",
+      "itemSubCode": "BV1480",
+      "displayName": "L1RF1SP-020mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-020mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1481": {
+      "partId": "BV1481",
+      "itemSubCode": "BV1481",
+      "displayName": "L1RF1SP-025mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-025mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1482": {
+      "partId": "BV1482",
+      "itemSubCode": "BV1482",
+      "displayName": "L1RF1SP-040mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-040mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1483": {
+      "partId": "BV1483",
+      "itemSubCode": "BV1483",
+      "displayName": "L1RF1SP-050mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1484": {
+      "partId": "BV1484",
+      "itemSubCode": "BV1484",
+      "displayName": "L1RF1SP-065mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1485": {
+      "partId": "BV1485",
+      "itemSubCode": "BV1485",
+      "displayName": "L1RF1SP-080mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1486": {
+      "partId": "BV1486",
+      "itemSubCode": "BV1486",
+      "displayName": "L1RF1SP-100mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BV1487": {
+      "partId": "BV1487",
+      "itemSubCode": "BV1487",
+      "displayName": "L1RF1SP-150mm (valve-ball-flanged)",
+      "category": "valve-ball-flanged",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "L1RF1SP-150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "EA1002": {
+      "partId": "EA1002",
+      "itemSubCode": "EA1002",
+      "displayName": "QT 5 (electric-actuator)",
+      "category": "electric-actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Marsh",
+        "model": "QT 5",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "EA1003": {
+      "partId": "EA1003",
+      "itemSubCode": "EA1003",
+      "displayName": "QT 10 (electric-actuator)",
+      "category": "electric-actuator",
+      "status": "catalog",
+      "oem": {
+        "make": "Marsh",
+        "model": "QT 10",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1001": {
+      "partId": "BF1001",
+      "itemSubCode": "BF1001",
+      "displayName": "1IWE6CL-050mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1002": {
+      "partId": "BF1002",
+      "itemSubCode": "BF1002",
+      "displayName": "1IWE6CL-065mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1003": {
+      "partId": "BF1003",
+      "itemSubCode": "BF1003",
+      "displayName": "1IWE6CL-080mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1004": {
+      "partId": "BF1004",
+      "itemSubCode": "BF1004",
+      "displayName": "1IWE6CL-100mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1005": {
+      "partId": "BF1005",
+      "itemSubCode": "BF1005",
+      "displayName": "1IWE6CL-125mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-125mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1006": {
+      "partId": "BF1006",
+      "itemSubCode": "BF1006",
+      "displayName": "1IWE6CL-150mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1007": {
+      "partId": "BF1007",
+      "itemSubCode": "BF1007",
+      "displayName": "1IWE6CL-200mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-200mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1008": {
+      "partId": "BF1008",
+      "itemSubCode": "BF1008",
+      "displayName": "1IWE6CL-250mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-250mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1009": {
+      "partId": "BF1009",
+      "itemSubCode": "BF1009",
+      "displayName": "1IWE6CL-300mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CL-300mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1010": {
+      "partId": "BF1010",
+      "itemSubCode": "BF1010",
+      "displayName": "1IWE6CG-350mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CG-350mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1011": {
+      "partId": "BF1011",
+      "itemSubCode": "BF1011",
+      "displayName": "1IWE6CG-400mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CG-400mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1012": {
+      "partId": "BF1012",
+      "itemSubCode": "BF1012",
+      "displayName": "1IWE6CG-450mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CG-450mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1013": {
+      "partId": "BF1013",
+      "itemSubCode": "BF1013",
+      "displayName": "1IWE6CG-500mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CG-500mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1014": {
+      "partId": "BF1014",
+      "itemSubCode": "BF1014",
+      "displayName": "1IWE6CG-600mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE6CG-600mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1015": {
+      "partId": "BF1015",
+      "itemSubCode": "BF1015",
+      "displayName": "1IWEICL-050mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1016": {
+      "partId": "BF1016",
+      "itemSubCode": "BF1016",
+      "displayName": "1IWEICL-065mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1017": {
+      "partId": "BF1017",
+      "itemSubCode": "BF1017",
+      "displayName": "1IWEICL-080mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1018": {
+      "partId": "BF1018",
+      "itemSubCode": "BF1018",
+      "displayName": "1IWEICL-100mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1019": {
+      "partId": "BF1019",
+      "itemSubCode": "BF1019",
+      "displayName": "1IWEICL-125mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-125mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1020": {
+      "partId": "BF1020",
+      "itemSubCode": "BF1020",
+      "displayName": "1IWEICL-150mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1021": {
+      "partId": "BF1021",
+      "itemSubCode": "BF1021",
+      "displayName": "1IWEICL-200mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-200mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1022": {
+      "partId": "BF1022",
+      "itemSubCode": "BF1022",
+      "displayName": "1IWEICL-250mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWEICL-250mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1023": {
+      "partId": "BF1023",
+      "itemSubCode": "BF1023",
+      "displayName": "1IWE1CL-300mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE1CL-300mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1024": {
+      "partId": "BF1024",
+      "itemSubCode": "BF1024",
+      "displayName": "1IWE1CG-350mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE1CG-350mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1025": {
+      "partId": "BF1025",
+      "itemSubCode": "BF1025",
+      "displayName": "1IWE1CG-400mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE1CG-400mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1026": {
+      "partId": "BF1026",
+      "itemSubCode": "BF1026",
+      "displayName": "1IWE1CG-450mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE1CG-450mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1027": {
+      "partId": "BF1027",
+      "itemSubCode": "BF1027",
+      "displayName": "1IWE1CG-500mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE1CG-500mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1028": {
+      "partId": "BF1028",
+      "itemSubCode": "BF1028",
+      "displayName": "1IWE1CG-600mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWE1CG-600mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1029": {
+      "partId": "BF1029",
+      "itemSubCode": "BF1029",
+      "displayName": "1IWNICL-050mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-050mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1030": {
+      "partId": "BF1030",
+      "itemSubCode": "BF1030",
+      "displayName": "1IWNICL-065mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-065mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1031": {
+      "partId": "BF1031",
+      "itemSubCode": "BF1031",
+      "displayName": "1IWNICL-080mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-080mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1032": {
+      "partId": "BF1032",
+      "itemSubCode": "BF1032",
+      "displayName": "1IWNICL-100mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-100mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1033": {
+      "partId": "BF1033",
+      "itemSubCode": "BF1033",
+      "displayName": "1IWNICL-125mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-125mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1034": {
+      "partId": "BF1034",
+      "itemSubCode": "BF1034",
+      "displayName": "1IWNICL-150mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-150mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1035": {
+      "partId": "BF1035",
+      "itemSubCode": "BF1035",
+      "displayName": "1IWNICL-200mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-200mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1036": {
+      "partId": "BF1036",
+      "itemSubCode": "BF1036",
+      "displayName": "1IWNICL-250mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWNICL-250mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1037": {
+      "partId": "BF1037",
+      "itemSubCode": "BF1037",
+      "displayName": "1IWN1CL-300mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWN1CL-300mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1038": {
+      "partId": "BF1038",
+      "itemSubCode": "BF1038",
+      "displayName": "1IWN1CG-350mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWN1CG-350mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1039": {
+      "partId": "BF1039",
+      "itemSubCode": "BF1039",
+      "displayName": "1IWN1CG-400mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWN1CG-400mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1040": {
+      "partId": "BF1040",
+      "itemSubCode": "BF1040",
+      "displayName": "1IWN1CG-450mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWN1CG-450mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1041": {
+      "partId": "BF1041",
+      "itemSubCode": "BF1041",
+      "displayName": "1IWN1CG-500mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWN1CG-500mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1042": {
+      "partId": "BF1042",
+      "itemSubCode": "BF1042",
+      "displayName": "1IWN1CG-600mm (butterfly-valve-pn10)",
+      "category": "butterfly-valve-pn10",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "1IWN1CG-600mm",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1043": {
+      "partId": "BF1043",
+      "itemSubCode": "BF1043",
+      "displayName": "2IWNGSL-050MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-050MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1044": {
+      "partId": "BF1044",
+      "itemSubCode": "BF1044",
+      "displayName": "2IWNGSL-065MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-065MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1045": {
+      "partId": "BF1045",
+      "itemSubCode": "BF1045",
+      "displayName": "2IWNGSL-080MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-080MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1046": {
+      "partId": "BF1046",
+      "itemSubCode": "BF1046",
+      "displayName": "2IWNGSL-100MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-100MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1047": {
+      "partId": "BF1047",
+      "itemSubCode": "BF1047",
+      "displayName": "2IWNGSL-125MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-125MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1048": {
+      "partId": "BF1048",
+      "itemSubCode": "BF1048",
+      "displayName": "2IWNGSL-150MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-150MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1049": {
+      "partId": "BF1049",
+      "itemSubCode": "BF1049",
+      "displayName": "2IWNGSL-200MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-200MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1050": {
+      "partId": "BF1050",
+      "itemSubCode": "BF1050",
+      "displayName": "2IWNGSL-250MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-250MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
+      }
+    },
+    "BF1051": {
+      "partId": "BF1051",
+      "itemSubCode": "BF1051",
+      "displayName": "2IWNGSL-300MM (butterfly-valve-pn16)",
+      "category": "butterfly-valve-pn16",
+      "status": "catalog",
+      "oem": {
+        "make": "L&T",
+        "model": "2IWNGSL-300MM",
+        "datasheetRef": "VAC Standard Component List (code/model/make authoritative)"
+      },
+      "interfaces": [],
+      "tools": [],
+      "fasteners": [],
+      "rules": [],
+      "checks": [],
+      "hookups": [],
+      "media": [],
+      "provenance": {
+        "lastUpdated": "2026-07-21",
+        "overallConfidence": "catalog skeleton - only RIPPL code / model / make are confirmed; specs to be enriched from a datasheet when this part is used in a config."
       }
     }
   },
@@ -1018,26 +6300,8 @@
     {
       "id": "OQ-07",
       "part": "afr",
-      "question": "AFR-to-L-plate and L-plate-to-actuator fastener sizes/torques (M5/M6 placeholders)?",
+      "question": "AFR mounting fasteners: the Shavo bracket is optional/panel-mount; Config 1 mounts the AFR on a Rajdeep custom L-plate (afr-plate). Confirm the AFR-to-L-plate and L-plate-to-actuator fastener sizes/torques from the Rajdeep drawing.",
       "blocks": "confirmed fastener + torque"
-    },
-    {
-      "id": "OQ-09",
-      "part": "lsb",
-      "question": "Confirm limit switch model (Honeywell V15S05?) and LB1002 datasheet.",
-      "blocks": "hookups (electrical) confidence"
-    },
-    {
-      "id": "OQ-10",
-      "part": "sov",
-      "question": "Confirm SV1007 electrical entry (1/2\" NPT) and the ordered function (3/2 vs 5/2) for this build.",
-      "blocks": "hookups + rule D1"
-    },
-    {
-      "id": "OQ-11",
-      "part": "afr",
-      "question": "SB10 regulation range and gauge model/spec.",
-      "blocks": "hookups (air) confidence"
     },
     {
       "id": "OQ-12",
@@ -1056,6 +6320,34 @@
       "part": "config-level (Config 2)",
       "question": "Config 1 is now FAIL-CLOSE. Config 2 was defined as the fail-to-close 'opposite' of Config 1, so the contrast is broken (both fail-close); Config 2's own actuator code RNP80SR40C... is also spring-to-close (C). Decide: flip Config 2 to FAIL-OPEN (code A) to keep a two-config contrast, or accept both fail-close and drop the 'opposite' framing. Affects data/config02.json, docs/config02-ingestion.md, PROJECT-STATUS Config 2 section, and App.jsx toConfig2.",
       "blocks": "Config 2 fail-action definition + demo contrast"
+    },
+    {
+      "id": "OQ-18",
+      "part": "mor",
+      "question": "QTM-250 gearbox datasheet needed: gear ratio, rated output torque, mounting standard (ISO 5211 flange size?), and IP/temp rating.",
+      "blocks": "any spec use for the MOR"
+    },
+    {
+      "id": "OQ-19",
+      "part": "mor",
+      "question": "Is the 11x11 mm square the INPUT drive or the valve-stem OUTPUT? Confirm from GA drawing.",
+      "blocks": "correct interface mating in configs"
+    },
+    {
+      "id": "OQ-20",
+      "part": "mor",
+      "question": "Which config(s) use the MOR, and does it mount between valve and actuator, or as a standalone manual operator? Confirm item sub-code.",
+      "blocks": "config recipe + itemSubCode"
+    },
+    {
+      "id": "OQ-16",
+      "part": "sov",
+      "question": "SOV code + hazardous-area cert: DB uses SV1007 = 30318-...-24VDC-37 (FLAMEPROOF Ex d); the VAC component list standard is SV1005 = 30318-...-24VDC-16 (WEATHERPROOF). Same 3/2 24VDC 30318, different enclosure/cert. Confirm which is Config 1's standard (affects certification, not geometry)."
+    },
+    {
+      "id": "OQ-17",
+      "part": "lsb",
+      "question": "LSB code/housing: DB uses LB1002 = KS2V1A2NGRNN (KS = STANDARD housing); the VAC component list has LB1001 = KC2V1A3NGRNN+BKT (KC = COMPACT housing). Both are 2-switch NAMUR/VDI-VDE-3845 units - the difference is the housing type. Confirm which is Config 1's standard."
     }
   ]
 }

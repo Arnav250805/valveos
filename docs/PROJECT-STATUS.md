@@ -1,6 +1,6 @@
 # ValveOS — project status & handoff (read this first)
 
-_Last updated: 2026-07-17. Single source of truth for any new chat._
+_Last updated: 2026-07-21. Single source of truth for any new chat._
 
 ## 2026-07-20 — Positioning, ICP & solution framing (business brainstorm)
 
@@ -201,3 +201,31 @@ next step = config switcher + placeholder .glb for valve40 / actuator80).
 
 ### Config 3 (future)
 Gearboxes + MORs (Q-Tork). Datasheet parked at `docs/Datasheets/QTork Technical Handbook.pdf`; extract part records only once Config 3's BOM is defined.
+
+## Geometry source-of-truth policy (2026-07-21)
+DECISION (Arnav): official OEM STEP files in `Dirac x VAC/Component STEP files/` are the ONLY
+source of truth for component geometry. The generic TraceParts/GrabCAD stand-ins used for
+Config 1 & 2 are DEPRECATED and get fully replaced by official STEP-derived `.glb` as each
+manufacturer's STEP arrives. No generic parts remain in the final product.
+
+Pipeline per component: official STEP -> FreeCAD / cascadio -> `.glb` -> swap into `app/public`.
+
+STEP status:
+- HAVE official STEP: MOR (MR1002, Q-Tork QTM-250), Positioner (PR1001, Rotex RTX1000R) - neither is in Config 1/2, so nothing to swap into the demo yet.
+- PENDING official STEP (Config 1/2): L&T valve, Valmet actuator, Rotex SOV, Valmet LSB, Shavo AFR - request from each OEM.
+- CUSTOM (Rajdeep): bracket/coupling BK1001 - needs Rajdeep's own STEP or a remodel from the shop drawing.
+
+Not demo-blocking: generic stand-ins are fine for the Wizard-of-Oz demo. The real-geometry swap is a per-component quality upgrade done as STEPs come in.
+
+## Update 2026-07-21 — datasheet pass done, full catalog ingested, configurator preview
+- **Config 1 datasheet pass COMPLETE.** All five components OEM-confirmed with page citations in the parts-knowledge DB: L&T valve, Valmet actuator, Rotex SOV, Neles/Valmet LSB, Shavo AFR. Confirmed highlights: actuator RNP50SR40CA1GD (fail-CLOSE, 4-bar spring, 8 barg max, ISO 5211 F03/F05, 14 mm bi-square drive); valve top flange F03; SOV 3/2 NAMUR 24 VDC 0-10 bar, 1/2" NPT entry; LSB VDI/VDE 3845 + 2x SPDT Honeywell V15; AFR G1/4 BSP 0.7-7 bar with integral 40 mm gauge.
+- **Component-list corrections (RIPPL code / model / make are the only trusted columns):** valve is L1FF1C-015mm FULL bore (not L1RF1C regular). Code/variant questions logged, NOT auto-renamed: SOV SV1007 (flameproof -37) vs list SV1005 (weatherproof -16) = OQ-16; LSB LB1002 (KS standard housing) vs list LB1001 (KC compact) = OQ-17. Marsh = electric-actuator line (not the AFR gauge; that gauge is integral to the Shavo AFR STEP).
+- **Full catalog ingested.** 223 catalog skeleton records added from the VAC Standard Component List (code/model/make only, status="catalog"): 74 flanged + 30 socket-weld ball valves, 61 Valmet actuators, 42+9 butterfly valves, 4 SOVs, 2 Marsh electric actuators, 1 LSB, 1 MOR. DB now 238 parts (15 active, 223 catalog). Reproducible/idempotent: `scripts/ingest_component_list.py`. Component list versioned in-repo at `docs/Datasheets/`.
+- **Geometry source-of-truth policy** (see its own section above): official OEM STEP files in `Component STEP files/` are the only geometry truth; TraceParts stand-ins are deprecated. Have official STEP: MOR (MR1002), Positioner (PR1001). Pending: L&T / Valmet / Rotex / Shavo for Config 1/2 (Arnav has emailed requests).
+- **Human views** of the DB: `docs/parts-knowledge.html` (active parts as cards + searchable 223-row catalog table). **Configurator preview:** `docs/configurator-preview.html` — dropdowns fed live from the DB, assembles a composite RIPPL code, shows full-knowledge vs catalog-skeleton per part (the flywheel). Both regenerate via `scripts/build_parts_views.py` and `scripts/build_configurator_preview.py`.
+
+### Open items / reminders (as of 2026-07-21)
+- Arnav to confirm: SOV cert variant (OQ-16), LSB housing variant (OQ-17). Non-blocking.
+- Remaining open questions are mostly unpublished fastener torques (set by bolt grade), valve stem size, tool sizes, Config 2 fail-action contrast (OQ-15), and Config 3 MOR items (OQ-18/19/20).
+- Critical path unchanged and still the priority when Arnav is back on it: solidify Config 2 (real per-config valve + ratify item code) -> operator/tablet view -> configurator front door (build on configurator-preview) -> FLOOR SHOOT (time-boxed) -> investor assets.
+- Backlog: bulk-enrich catalog parts on use; unify manual + 3D onto one generated source; cloud backend only when the floor tablet writes data back.
